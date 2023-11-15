@@ -1,0 +1,22 @@
+{
+  "name": "nanotech_test-bo",
+  "version": "1.0.0",
+  "description": "NanoTech test",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "nanotech",
+    "test"
+  ],
+  "author": "Ndeloko Ulrich",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongodb": "^6.2.0",
+    "mongoose": "^8.0.0"
+  }
+}

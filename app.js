@@ -15,9 +15,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use('/api', routes);
-app.get("/", (req, res) => {
-  return res.send("App Launched!")
-})
 app.get("*", (req, res) => {
   return res.status(404).json({
     message: "API endpoint not found"

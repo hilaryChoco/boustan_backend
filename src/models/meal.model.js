@@ -17,6 +17,10 @@ const mealSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.ObjectId,
         ref: "Option"
     }],
+    categoryId: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "Category"
+    },
     createdAt: {
         type: Date,
         default: Date.now,

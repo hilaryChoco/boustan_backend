@@ -182,7 +182,7 @@ exports.validateOTP = async (req, res) => {
 
 exports.deleteAccount = async (req, res) => {
     try {
-        const email = req.body.email;
+        const email = req.query.email;
         if (!validateEmail(email)) {
             return res.status(400).json({
                 type: "error",

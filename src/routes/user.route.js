@@ -283,18 +283,13 @@ router.put("/edit", isAuth, userCtrl.editAccount);
  *              - Users
  *          security:
  *              - bearerAuth: []
- *          requestBody:
- *              required: true
- *              content:
- *                  application/json:
- *                      schema:
- *                          type: object
- *                          properties:
- *                              email:
- *                                  type: string
- *                                  required: true
- *                          example:
- *                              email: "john@email.com"
+ *          parameters:
+ *              - in: query
+ *                name: email
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: User email
  *          responses:
  *              '200':
  *                description: >

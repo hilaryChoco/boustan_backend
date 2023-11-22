@@ -13,15 +13,19 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
+        lowerCase: true
     },
     zipCode: {
         type: String,
         trim: true,
     },
-    otpCode: {
+    otp: {
         type: String,
         trim: true,
         default: "saved"
+    },
+    token: {
+        type: String
     },
     createdAt: {
         type: Date,

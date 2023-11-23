@@ -1,16 +1,8 @@
 const mongoose = require("mongoose");
 
 module.exports = () => {
-
-    console.log(process.env.DATABASE)
-
-    const connectionParams = {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    };
-
     try {
-        mongoose.connect(process.env.DATABASE, connectionParams)
+        mongoose.connect(process.env.DATABASE)
         .then(async () => {
             console.log("Database connected successfully!");
         });

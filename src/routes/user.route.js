@@ -182,7 +182,7 @@ router.post("/auth/resend-otp", userCtrl.login);
 
 /**
  * @swagger
- *  /api/users/auth/opt-validation:
+ *  /api/users/auth/otp-validation:
  *      post:
  *          summary: Validates user's OTP
  *          tags:
@@ -218,7 +218,7 @@ router.post("/auth/resend-otp", userCtrl.login);
  *                    Server Error
  *
  */
-router.post("/auth/opt-validation", userCtrl.validateOTP);
+router.post("/auth/otp-validation", userCtrl.validateOTP);
 
 // -----------  PUT ROUTES  -------------
 

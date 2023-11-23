@@ -25,6 +25,9 @@ app.use(express.static('public'));
 app.use('/api-docs', api_doc);
 
 app.use('/api', routes);
+app.get('/', (req, res) => {
+  return res.send("API server started successfully!")
+});
 app.get("*", (req, res) => {
   return res.status(404).json({
     message: "API endpoint not found"

@@ -10,7 +10,7 @@ const { isAuth } = require('../middleware/auth');
  * @swagger
  *  /api/users:
  *      get:
- *          summary: User logs into the platform
+ *          summary: Displays a list of users
  *          tags:
  *              - Users
  *          security:
@@ -296,7 +296,7 @@ router.put("/edit", isAuth, userCtrl.editAccount);
  *                    Account deleted successfully
  *              '400':
  *                description: >
- *                    Invalid email
+ *                    Invalid email || You are not allowed to delete this account
  *              '404':
  *                description: >
  *                    User not found

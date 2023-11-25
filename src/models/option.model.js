@@ -11,9 +11,9 @@ const optionSchema = new mongoose.Schema({
     required: {
         type: Boolean,
     },
-    items: [{
+    elements: [{
         type: mongoose.SchemaTypes.ObjectId,
-        ref: "Option_Item"
+        ref: "Option_Element"
     }],
     createdAt: {
         type: Date,

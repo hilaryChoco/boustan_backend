@@ -9,7 +9,7 @@ exports.getById = async(id) => {
 }
 
 exports.getAll = async() => {
-    return Category.find().sort("-createdAt");
+    return Category.find().sort("name");
 }
 
 exports.update = async(id, data) => {

@@ -1,21 +1,22 @@
-const { categoryService, mealService } = require('../services');
+const { elementService, optionService } = require('../services');
+
 
 exports.create = async (req, res) => {
     try {
-        const { name, uri } = req.body;
+        const { name, price } = req.body;
 
-        let category = await categoryService.create({ name, uri });
-        if(!category) {
+        let element = await elementService.create({ name, price });
+        if(!element) {
             return res.status(500).json({
                 type: "error",
-                message: "Category creation failure"
+                message: "Element creation failure"
             });
         }
 
         return res.status(201).json({
             type: "success",
-            message: "Category successfully created",
-            data: category
+            message: "Element successfully created",
+            data: element
         });
     } catch (error) {
         return res.status(500).json({
@@ -29,28 +30,28 @@ exports.create = async (req, res) => {
 exports.edit = async (req, res) => {
     try {
         let id = req.query.id;
-        let { name, uri } = req.body;
+        let { name, price } = req.body;
 
-        let category = await categoryService.getById(id);
-        if(!category) {
+        let element = await elementService.getById(id);
+        if(!element) {
             return res.status(404).json({
                 type: "error",
-                message: "Category not found"
+                message: "Element not found"
             });
         }
 
-        let updatedCategory = await categoryService.update(id, { name, uri });
-        if(!updatedCategory) {
+        let updatedElement = await elementService.update(id, { name, price });
+        if(!updatedElement) {
             return res.status(500).json({
                 type: "error",
-                message: "An error occured during category modification"
+                message: "An error occured during element modification"
             });
         }
 
         return res.status(200).json({
             type: "success",
-            message: "Category successfully modified",
-            data: updatedCategory
+            message: "Element successfully modified",
+            data: updatedElement
         });
     } catch (error) {
         return res.status(500).json({
@@ -65,33 +66,33 @@ exports.delete = async (req, res) => {
     try {
         let id = req.query.id;
 
-        let category = await categoryService.getById(id);
-        if(!category) {
+        let element = await elementService.getById(id);
+        if(!element) {
             return res.status(404).json({
                 type: "error",
-                message: "Category not found"
+                message: "Element not found"
             });
         }
 
-        let categoryMeals = await mealService.getMealsOfCategory(id);
-        if(categoryMeals.length > 0) {
+        let elementOptions = await optionService.getOptionsOfElement(id);
+        if(elementOptions.length > 0) {
             return res.status(400).json({
                 type: "error",
-                message: "Sorry, you cannot delete this category because it contains some meals."
+                message: "Sorry, you cannot delete this element because it belongs to some options."
             });
         }
 
-        let deletedCategory = await categoryService.delete(id);
-        if(!deletedCategory) {
+        let deletedElement = await elementService.delete(id);
+        if(!deletedElement) {
             return res.status(500).json({
                 type: "error",
-                message: "Category could not be deleted due to an issue"
+                message: "Element could not be deleted due to an issue"
             });
         }
 
         return res.status(200).json({
             type: "success",
-            message: "Category successfully deleted"
+            message: "Element successfully deleted"
         });
     } catch (error) {
         return res.status(500).json({
@@ -104,11 +105,11 @@ exports.delete = async (req, res) => {
 
 exports.getAll = async (req, res) => {
     try {
-        let categories = await categoryService.getAll();
+        let elements = await elementService.getAll();
 
         return res.status(200).json({
             type: "success",
-            data: categories
+            data: elements
         });
     } catch (error) {
         return res.status(500).json({

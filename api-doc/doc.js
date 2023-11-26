@@ -31,6 +31,10 @@ const swaggerDefinition = {
         url: `http://localhost:${process.env.PORT}`,
         description: 'Development server',
       },
+      {
+        url: 'https://boustan-bo.onrender.com',
+        description: 'Production server',
+      },
     ],
   };
 

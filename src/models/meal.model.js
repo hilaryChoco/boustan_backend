@@ -13,7 +13,7 @@ const mealSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
-    options: [{
+    optionIds: [{
         type: mongoose.SchemaTypes.ObjectId,
         ref: "Option"
     }],

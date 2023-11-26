@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const option_itemSchema = new mongoose.Schema({
+const option_elementSchema = new mongoose.Schema({
     name: {
         type: String,
         trim: true,
@@ -15,6 +15,6 @@ const option_itemSchema = new mongoose.Schema({
     },
 });
 
-const Option_Item = mongoose.model("Option_Item", option_itemSchema);
+const Option_Element = mongoose.model("Option_Element", option_elementSchema);
 
-module.exports = Option_Item;
+module.exports = Option_Element;

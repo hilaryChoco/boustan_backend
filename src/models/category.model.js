@@ -9,10 +9,6 @@ const categorySchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-    mealIds: [{
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: "Meal"
-    }],
     createdAt: {
         type: Date,
         default: Date.now,

@@ -23,11 +23,11 @@ exports.login = async (req, res) => {
         const otp = generateCode();
         user = await userService.update(user._id, { otp });
 
-        const emailData = {
+        /*const emailData = {
             to: user.email,
             subject: "Authentication code",
             description: `Use this code to log into your account.<br>Code: <b>${otp}</b>`
-        }
+        }*/
 
         res.status(200).json({
             type: "success",
@@ -35,7 +35,8 @@ exports.login = async (req, res) => {
             data: user
         });
 
-        emailService.sendCode(emailData);
+       // emailService.sendCode(emailData);
+
     } catch (error) {
         return res.status(500).json({
             type: "error",
@@ -44,6 +45,7 @@ exports.login = async (req, res) => {
         });
     }
 };
+
 
 exports.logout = async (req, res) => {
     req.session.destroy();
@@ -84,7 +86,7 @@ exports.createAccount = async (req, res) => {
                 data: user
             });
 
-            emailService.sendCode(emailData);
+            /*emailService.sendCode(emailData);*/
         }
         else {
             return res.status(500).json({

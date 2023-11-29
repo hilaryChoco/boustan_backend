@@ -1,21 +1,10 @@
-const { optionService, mealService, elementService } = require('../services');
+const { optionService, mealService } = require('../services');
 
 
 exports.create = async (req, res) => {
     try {
         let { name, max, required, elements } = req.body;
         max = parseInt(max);
-
-        let elementIds = await elementService.getAll();
-        elementIds = elementIds.map(element => element._id.toString());
-        for (const elementId of elements) {
-            if( !(elementIds.includes(elementId)) ) {
-                return res.status(404).json({
-                    type: "error",
-                    message: "Some option elements are not recognized"
-                });
-            }
-        };
 
         let option = await optionService.create({ name, max, required, elements });
         if(!option) {
@@ -52,17 +41,6 @@ exports.edit = async (req, res) => {
                 message: "Option not found"
             });
         }
-
-        let elementIds = await elementService.getAll();
-        elementIds = elementIds.map(element => element._id.toString());
-        for (const elementId of elements) {
-            if( !(elementIds.includes(elementId)) ) {
-                return res.status(404).json({
-                    type: "error",
-                    message: "Some option elements are not recognized"
-                });
-            }
-        };
 
         let updatedOption = await optionService.update(id, { name, max, required, elements });
         if(!updatedOption) {

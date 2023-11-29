@@ -1,5 +1,16 @@
 const mongoose = require("mongoose");
 
+const elementSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        trim: true,
+    },
+    price: {
+        type: String,
+        trim: true,
+    }
+});
+
 const optionSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -11,10 +22,7 @@ const optionSchema = new mongoose.Schema({
     required: {
         type: Boolean,
     },
-    elements: [{
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: "Option_Element"
-    }],
+    elements: [ elementSchema ],
     createdAt: {
         type: Date,
         default: Date.now,

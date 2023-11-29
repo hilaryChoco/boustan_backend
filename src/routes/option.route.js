@@ -56,13 +56,22 @@ router.get("/", isAuth, optionCtrl.getAll);
  *                              elements:
  *                                  type: array
  *                                  items:
- *                                      type: string
- *                                      required: true
+ *                                      type: "object"
+ *                                      properties:
+ *                                          name:
+ *                                              type: string
+ *                                              required: true
+ *                                          price:
+ *                                              type: string
+ *                                              required: true
  *                          example:
  *                              name: "Option1"
  *                              max: 3
  *                              required: true
- *                              elements: ["123", "456"]
+ *                              elements: {
+ *                                  name: "Element1",
+ *                                  price: "1200"
+ *                              }
  *          responses:
  *              '201':
  *                description: >
@@ -111,13 +120,22 @@ router.post("/create", isAuth, optionCtrl.create);
  *                              elements:
  *                                  type: array
  *                                  items:
- *                                      type: string
- *                                      required: true
+ *                                      type: "object"
+ *                                      properties:
+ *                                          name:
+ *                                              type: string
+ *                                              required: true
+ *                                          price:
+ *                                              type: string
+ *                                              required: true
  *                          example:
  *                              name: "Option1"
  *                              max: 5
  *                              required: false
- *                              elements: ["321", "654"]
+ *                              elements: {
+ *                                  name: "Element1",
+ *                                  price: "1200"
+ *                              }
  *          responses:
  *              '200':
  *                description: >

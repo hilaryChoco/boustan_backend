@@ -15,6 +15,22 @@ const { isAuth } = require('../middleware/auth');
  *              - Categories
  *          security:
  *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: limit
+ *                schema:
+ *                  type: string
+ *                description: Number of items
+ *              - in: query
+ *                name: page
+ *                schema:
+ *                  type: string
+ *                description: Page number
+ *              - in: query
+ *                name: order
+ *                schema:
+ *                  type: string
+ *                description: Sorting order ["asc", "desc"]
  *          responses:
  *              '200':
  *                description: >
@@ -25,6 +41,45 @@ const { isAuth } = require('../middleware/auth');
  *
  */
 router.get("/", isAuth, categoryCtrl.getAll);
+
+/**
+ * @swagger
+ *  /api/categories/with-meals:
+ *      get:
+ *          summary: Displays a list of categories with their respective meals
+ *          tags:
+ *              - Categories
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: limit
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Number of items
+ *              - in: query
+ *                name: page
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Page number
+ *              - in: query
+ *                name: order
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Sorting order ["asc", "desc"]
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Returns a list of categories
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/with-meals", isAuth, categoryCtrl.getCategoriesWithTheirMeals);
 
 // -----------  POST ROUTES  -------------
 

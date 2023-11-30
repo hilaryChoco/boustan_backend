@@ -1,9 +1,5 @@
 const { Option } = require('../models');
 
-exports.getOptionsOfElement = async(elementId) => {
-    return Option.find({ elements: elementId });
-}
-
 exports.create = async(body) => {
     return await Option.create(body);
 }

@@ -8,6 +8,33 @@ const { isAuth } = require('../middleware/auth');
 
 /**
  * @swagger
+ *  /api/meals/get-one:
+ *      get:
+ *          summary: Displays a meal
+ *          tags:
+ *              - Meals
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: id
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Meal ID
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Returns an object of meals
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/get-one", mealCtrl.getById);
+
+/**
+ * @swagger
  *  /api/meals:
  *      get:
  *          summary: Displays a list of meals
@@ -25,6 +52,51 @@ const { isAuth } = require('../middleware/auth');
  *
  */
 router.get("/", isAuth, mealCtrl.getAll);
+
+/**
+ * @swagger
+ *  /api/meals/by-category:
+ *      get:
+ *          summary: Displays a list of meals by category
+ *          tags:
+ *              - Meals
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: categoryId
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Category ID
+ *              - in: query
+ *                name: limit
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Number of items
+ *              - in: query
+ *                name: page
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Page number
+ *              - in: query
+ *                name: order
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Sorting order ["asc", "desc"]
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Returns a list of meals
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/by-category", isAuth, mealCtrl.getAllByCategoryId);
 
 // -----------  POST ROUTES  -------------
 

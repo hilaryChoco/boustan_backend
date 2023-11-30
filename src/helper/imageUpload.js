@@ -1,5 +1,5 @@
 const util = require('util');
-const { storage, refreshAuthToken } = require('../config');
+const { storage, refreshAuthToken } = require('../config/imageUploadConfig');
 const bucket = storage.bucket('hpay-reward-bucket') // should be your bucket name
 
 /**

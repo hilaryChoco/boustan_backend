@@ -68,10 +68,10 @@ router.get("/", isAuth, optionCtrl.getAll);
  *                              name: "Option1"
  *                              max: 3
  *                              required: true
- *                              elements: {
+ *                              elements: [{
  *                                  name: "Element1",
  *                                  price: "1200"
- *                              }
+ *                              }]
  *          responses:
  *              '201':
  *                description: >
@@ -132,10 +132,10 @@ router.post("/create", isAuth, optionCtrl.create);
  *                              name: "Option1"
  *                              max: 5
  *                              required: false
- *                              elements: {
+ *                              elements: [{
  *                                  name: "Element1",
  *                                  price: "1200"
- *                              }
+ *                              }]
  *          responses:
  *              '200':
  *                description: >

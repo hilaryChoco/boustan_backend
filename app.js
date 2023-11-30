@@ -5,9 +5,6 @@ const session = require('express-session');
 const multer = require('multer')
 const api_doc = require('./api-doc/doc');
 const morgan = require ('morgan')
-
-
-const api_doc = require('./api-doc/doc');
 const routes = require("./src/routes");
 const { uploadImage } = require('./helpers/helpers');
 
@@ -51,7 +48,9 @@ app.get('/', (req, res) => {
   return res.send("API server started successfully!")
 });
 
+
 app.post('/uploads', async (req, res, next) => {
+
   try {
     const myFile = req.file
     const imageUrl = await uploadImage(myFile)

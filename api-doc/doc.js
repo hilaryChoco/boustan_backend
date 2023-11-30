@@ -32,6 +32,10 @@ const swaggerDefinition = {
         //url: `https://boustan-api.onrender.com:${process.env.PORT}`,
         description: 'Development server',
       },
+      {
+        url: 'https://boustan-bo.onrender.com',
+        description: 'Production server',
+      },
     ],
   };
 

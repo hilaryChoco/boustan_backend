@@ -104,7 +104,26 @@ exports.delete = async (req, res) => {
 
 exports.getAll = async (req, res) => {
     try {
-        let categories = await categoryService.getAll();
+        let { limit, page, order } = req.query;
+        let categories = await categoryService.getPaginated(limit, page, order);
+
+        return res.status(200).json({
+            type: "success",
+            data: categories
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.getCategoriesWithTheirMeals = async (req, res) => {
+    try {
+        let { limit, page, order } = req.query;
+        let categories = await categoryService.getCategoriesWithTheirMeals(limit, page, order);
 
         return res.status(200).json({
             type: "success",

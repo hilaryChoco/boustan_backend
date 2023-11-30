@@ -29,6 +29,7 @@ const swaggerDefinition = {
     servers: [
       {
         url: `http://localhost:${process.env.PORT}`,
+        //url: `https://boustan-api.onrender.com:${process.env.PORT}`,
         description: 'Development server',
       },
       {

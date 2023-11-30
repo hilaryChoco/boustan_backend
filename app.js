@@ -3,17 +3,24 @@ const express = require('express');
 const app = express();
 const session = require('express-session');
 const multer = require('multer')
+const api_doc = require('./api-doc/doc');
+const morgan = require ('morgan')
+
 
 const api_doc = require('./api-doc/doc');
 const routes = require("./src/routes");
 const { uploadImage } = require('./helpers/helpers');
 
+app.use(morgan('dev'));
+
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, authorization");
+    
     next();
 });
+
 app.use(
   session({
     secret: 'boustan fast food',
@@ -21,6 +28,7 @@ app.use(
     saveUninitialized: false
   })
 );
+
 
 const multerMid = multer({
   storage: multer.memoryStorage(),
@@ -38,6 +46,7 @@ app.use(express.static('public'));
 app.use('/api-docs', api_doc);
 
 app.use('/api', routes);
+
 app.get('/', (req, res) => {
   return res.send("API server started successfully!")
 });
@@ -70,6 +79,35 @@ app.get("*", (req, res) => {
     message: "API endpoint not found"
     });
 });
+
+
+
+
+/****************** Errors handler ************************/
+
+app.use((req,res,next)=>{
+
+  const error = new Error('Not found');
+  error.status = 404;
+  next(error);
+
+});
+
+
+app.use((error, req, res, next)=>{
+
+  res.status(error.status || 500);
+  res.json({
+
+    error:{
+      message:error.message
+    }
+  });
+  
+});
+
+
+/*********************************************************/
 
 
 module.exports = app;

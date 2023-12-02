@@ -5,6 +5,7 @@ const categoryRoute = require('./category.route');
 const optionRoute = require("./option.route");
 const mealRoute = require("./meal.route");
 const imageUploadRoute = require("./imageUpload.route");
+const branchRoute = require("./branch.route");
 
 
 const defaultRoutes = [
@@ -27,6 +28,10 @@ const defaultRoutes = [
   {
     path: '/uploads',
     route: imageUploadRoute,
+  },
+  {
+    path: '/branches',
+    route: branchRoute
   },
 ];
 

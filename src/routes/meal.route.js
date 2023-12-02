@@ -25,13 +25,16 @@ const { isAuth } = require('../middleware/auth');
  *          responses:
  *              '200':
  *                description: >
- *                    Returns an object of meals
+ *                    Returns a meal
+ *              '404':
+ *                description: >
+ *                    Meal not found
  *              '500':
  *                  description: >
  *                    Server Error
  *
  */
-router.get("/get-one", mealCtrl.getById);
+router.get("/get-one", isAuth, mealCtrl.getById);
 
 /**
  * @swagger

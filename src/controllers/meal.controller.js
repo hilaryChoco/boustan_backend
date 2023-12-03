@@ -173,6 +173,12 @@ exports.getById = async (req, res) => {
         const id = req.query.id;
 
         let meal = await mealService.getById(id);
+        if(!meal) {
+            return res.status(404).json({
+                type: "error",
+                message: "Meal not found"
+            });
+        }
 
         return res.status(200).json({
             type: "success",

@@ -23,6 +23,8 @@ const multerMid = multer({
  *          summary: Uploads an image to Google Cloud Storage
  *          tags:
  *              - Uploads
+ *          security:
+ *              - bearerAuth: []
  *          requestBody:
  *              required: true
  *              content:
@@ -45,7 +47,7 @@ const multerMid = multer({
  *                    Server Error
  *
  */
-router.post("/image", multerMid.single('file'), imageUploadCtrl.uploadImage);
+router.post("/image", isAuth, multerMid.single('file'), imageUploadCtrl.uploadImage);
 
 
 module.exports = router;

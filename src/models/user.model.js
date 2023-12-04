@@ -15,6 +15,13 @@ const userSchema = new mongoose.Schema({
         trim: true,
         lowerCase: true
     },
+    phone: {
+        type: String,
+        trim: true
+    },
+    dateOfBirth: {
+        type: Date
+    },
     zipCode: {
         type: String,
         trim: true,

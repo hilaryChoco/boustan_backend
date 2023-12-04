@@ -1,4 +1,4 @@
-const { branchService } = require('../services');
+const { branchService, mealService } = require('../services');
 
 
 function paginateAndSortAvailableMeals(array, pageNumber, pageSize, order) {
@@ -15,7 +15,19 @@ function paginateAndSortAvailableMeals(array, pageNumber, pageSize, order) {
 
 exports.create = async (req, res) => {
     try {
-        const { name, location, hours, availableMeals } = req.body;
+        let { name, location, hours } = req.body;
+        let availableMeals = [];
+
+        let meals = await mealService.getAll();
+        meals.forEach(meal => {
+            const obj = {
+                mealId: meal._id,
+                inPromo: false,
+                promoPrice: "0",
+                quantity: 0
+            }
+            availableMeals.push(obj);
+        });
 
         let branch = await branchService.create({ name, location, hours, availableMeals });
         if(!branch) {
@@ -88,8 +100,8 @@ exports.edit = async (req, res) => {
             });
         }
 
-        branch.location = location;
-        branch.hours = hours;
+        branch.location = location ? location : branch.location;
+        branch.hours = hours ? hours : branch.hours;
         let updatedBranch = await branch.save();
         if(!updatedBranch) {
             return res.status(500).json({
@@ -232,7 +244,16 @@ exports.modifyAvailableMealQuantity = async (req, res) => {
 exports.availableMealPromoPriceAndStatus = async (req, res) => {
     try {
         let { branchId, mealId } = req.query;
-        let { status, price } = req.body;
+        let { status, price, endPromoDate } = req.body;
+
+        endPromoDate = new Date(endPromoDate);
+        const currentDate = new Date();
+        if (endPromoDate <= currentDate) {
+            return res.status(400).json({
+                type: "error",
+                message: "The promotion ending date must be greater than today."
+            });
+        }
 
         let branch = await branchService.getById(branchId);
         if(!branch) {
@@ -252,6 +273,7 @@ exports.availableMealPromoPriceAndStatus = async (req, res) => {
 
         branchMeal.inPromo = status;
         branchMeal.promoPrice = price;
+        branchMeal.endPromoDate = endPromoDate;
         await branch.save();
 
         return res.status(200).json({

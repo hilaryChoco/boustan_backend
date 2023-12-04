@@ -149,3 +149,46 @@ exports.getAll = async (req, res) => {
         });
     }
 }
+
+exports.getAllByCategoryId = async (req, res) => {
+    try {
+        let { categoryId, limit, page, order } = req.query;
+        let meals = await mealService.getByCategoryId(categoryId, limit, page, order);
+
+        return res.status(200).json({
+            type: "success",
+            data: meals
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.getById = async (req, res) => {
+    try {
+        const id = req.query.id;
+
+        let meal = await mealService.getById(id);
+        if(!meal) {
+            return res.status(404).json({
+                type: "error",
+                message: "Meal not found"
+            });
+        }
+
+        return res.status(200).json({
+            type: "success",
+            data: meal
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}

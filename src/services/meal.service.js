@@ -31,3 +31,12 @@ exports.update = async(id, data) => {
 exports.delete = async(_id) => {
     return await Meal.deleteOne({ _id });
 }
+
+exports.getByCategoryId = async(categoryId, limit, page, order) => {
+    return Meal.find({ categoryId })
+    .populate("categoryId")
+    .populate("optionIds")
+    .limit(parseInt(limit) * 1)
+    .skip( (parseInt(page) - 1) * parseInt(limit) )
+    .sort(order == "asc" ? "name" : "-name");
+}

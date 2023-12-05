@@ -3,7 +3,7 @@ const { mealService, categoryService, optionService } = require('../services');
 
 exports.create = async (req, res) => {
     try {
-        const { name, uri, price, optionIds, categoryId } = req.body;
+        const { name, description, uri, price, optionIds, categoryId } = req.body;
 
         let category = await categoryService.getById(categoryId);
         if(!category) {
@@ -24,7 +24,7 @@ exports.create = async (req, res) => {
             }
         };
 
-        let meal = await mealService.create({ name, uri, price, optionIds, categoryId });
+        let meal = await mealService.create({ name, description, uri, price, optionIds, categoryId });
         if(!meal) {
             return res.status(500).json({
                 type: "error",
@@ -49,7 +49,7 @@ exports.create = async (req, res) => {
 exports.edit = async (req, res) => {
     try {
         let id = req.query.id;
-        let { name, uri, price, optionIds, categoryId } = req.body;
+        let { name, description, uri, price, optionIds, categoryId } = req.body;
 
         let meal = await mealService.getById(id);
         if(!meal) {
@@ -78,7 +78,7 @@ exports.edit = async (req, res) => {
             }
         };
 
-        let updatedMeal = await mealService.update(id, { name, uri, price, optionIds, categoryId });
+        let updatedMeal = await mealService.update(id, { name, description, uri, price, optionIds, categoryId });
         if(!updatedMeal) {
             return res.status(500).json({
                 type: "error",

@@ -121,6 +121,12 @@ router.post("/auth/logout", userCtrl.logout);
  *                              name:
  *                                  type: string
  *                                  required: true
+ *                              phone:
+ *                                  type: string
+ *                                  required: false
+ *                              dateOfBirth:
+ *                                  type: string
+ *                                  required: false
  *                              zipCode:
  *                                  type: string
  *                                  required: true
@@ -128,6 +134,8 @@ router.post("/auth/logout", userCtrl.logout);
  *                              email: "john@email.com"
  *                              firstName: "John"
  *                              name: "Boust"
+ *                              phone: "8521056"
+ *                              dateOfBirth: "2001/05/17"
  *                              zipCode: "00000"
  *          responses:
  *              '201':
@@ -247,6 +255,12 @@ router.post("/auth/otp-validation", userCtrl.validateOTP);
  *                              name:
  *                                  type: string
  *                                  required: true
+ *                              phone:
+ *                                  type: string
+ *                                  required: false
+ *                              dateOfBirth:
+ *                                  type: string
+ *                                  required: false
  *                              zipCode:
  *                                  type: string
  *                                  required: true
@@ -254,6 +268,8 @@ router.post("/auth/otp-validation", userCtrl.validateOTP);
  *                              email: "john@email.com"
  *                              firstName: "John"
  *                              name: "Boust"
+ *                              phone: "8521056"
+ *                              dateOfBirth: "2001/05/17"
  *                              zipCode: "00000"
  *          responses:
  *              '200':

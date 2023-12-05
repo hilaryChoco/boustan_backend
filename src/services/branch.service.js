@@ -9,7 +9,10 @@ exports.getById = async(id) => {
     .populate({
         path: "availableMeals",
         populate: {
-            path: "mealId"
+            path: "mealId",
+            populate: {
+                path: "categoryId"
+            }
         }
     });
 }

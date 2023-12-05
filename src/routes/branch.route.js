@@ -131,26 +131,6 @@ router.get("/meals", isAuth, branchCtrl.getBranchMeals);
  *                                          close:
  *                                              type: number
  *                                              required: true
- *                              availableMeals:
- *                                  type: array
- *                                  items:
- *                                      type: "object"
- *                                      properties:
- *                                          mealId:
- *                                              type: string
- *                                              required: true
- *                                          inPromo:
- *                                              type: boolean
- *                                              required: true
- *                                          promoPrice:
- *                                              type: string
- *                                              required: false
- *                                          quantity:
- *                                              type: number
- *                                              required: true
- *                                          endPromoDate:
- *                                              type: string
- *                                              required: false
  *                          example:
  *                              name: "Branch_1"
  *                              location: {
@@ -162,13 +142,6 @@ router.get("/meals", isAuth, branchCtrl.getBranchMeals);
  *                                  open: 480,
  *                                  close: 1439
  *                              }
- *                              availableMeals: [{
- *                                  mealId: "8952",
- *                                  inPromo: false,
- *                                  promoPrice: "1200",
- *                                  quantity: 6,
- *                                  endPromoDate: "2024/02/16",
- *                              }]
  *          responses:
  *              '201':
  *                description: >
@@ -401,9 +374,13 @@ router.put("/edit/meals/quantity", isAuth, branchCtrl.modifyAvailableMealQuantit
  *                              price:
  *                                  type: string
  *                                  required: true
+ *                              endPromoDate:
+ *                                  type: string
+ *                                  required: true
  *                          example:
  *                              status: true
  *                              price: "1400"
+ *                              endPromoDate: "2024/12/20"
  *          responses:
  *              '200':
  *                description: >

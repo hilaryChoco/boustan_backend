@@ -57,7 +57,7 @@ exports.logout = async (req, res) => {
 
 exports.createAccount = async (req, res) => {
     try {
-        const { email, firstName, name, zipCode } = req.body;
+        const { email, firstName, name, phone, dateOfBirth, zipCode } = req.body;
         if (!validateEmail(email)) {
             return res.status(400).json({
                 type: "error",
@@ -70,14 +70,19 @@ exports.createAccount = async (req, res) => {
                 message: "The email you entered is already taken"
             });
         }
+        if ( await userService.isPhoneTaken(phone) ) {
+            return res.status(400).json({
+                type: "error",
+                message: "The phone number you entered is already taken"
+            });
+        }
 
-        const otp = generateCode();
-        const user = await userService.create({ email, firstName, name, zipCode, otp });
+        const user = await userService.create({ email, firstName, name, phone, dateOfBirth, zipCode });
         if (user) {
             const emailData = {
                 to: user.email,
-                subject: "Authentication code",
-                description: `Use this code to log into your account.<br>Code: <b>${otp}</b>`
+                subject: "Welcome to Boustan",
+                description: `This mail is to inform you thhat your account has been successfully created on Boustan. Feel free to order your meals and have fun.`
             }
 
             res.status(201).json({
@@ -105,11 +110,17 @@ exports.createAccount = async (req, res) => {
 
 exports.editAccount = async (req, res) => {
     try {
-        const { email, firstName, name, zipCode } = req.body;
+        const { email, firstName, name, phone, dateOfBirth, zipCode } = req.body;
         if (!validateEmail(email)) {
             return res.status(400).json({
                 type: "error",
                 message: "Invalid email"
+            });
+        }
+        if ( await userService.isPhoneTaken(phone) ) {
+            return res.status(400).json({
+                type: "error",
+                message: "The phone number you entered is already taken"
             });
         }
 
@@ -121,7 +132,7 @@ exports.editAccount = async (req, res) => {
             });
         }
 
-        const updatedAccount = await userService.update(user._id, { email, firstName, name, zipCode });
+        const updatedAccount = await userService.update(user._id, { firstName, name, phone, dateOfBirth, zipCode });
         if(!updatedAccount) {
             return res.status(500).json({
                 type: "error",

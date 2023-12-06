@@ -56,26 +56,35 @@ exports.logout = async (req, res) => {
 exports.createAccount = async (req, res) => {
     try {
         const { email, firstName, name, phone, dateOfBirth, zipCode } = req.body;
-        if (!validateEmail(email)) {
+        if(!req.body.email) {
+            return res.status(400).json({
+                type: "error",
+                message: "Email address required"
+            });
+        }
+        if (!validateEmail(req.body.email)) {
             return res.status(400).json({
                 type: "error",
                 message: "Invalid email"
             });
         }
-        if ( await userService.isEmailTaken(email) ) {
+        if ( await userService.isEmailTaken(req.body.email) ) {
             return res.status(400).json({
                 type: "error",
                 message: "The email you entered is already taken"
             });
         }
-        if ( await userService.isPhoneTaken(phone) ) {
+        if ( req.body.phone && await userService.isPhoneTaken(phone) ) {
             return res.status(400).json({
                 type: "error",
                 message: "The phone number you entered is already taken"
             });
         }
 
-        const user = await userService.create({ email, firstName, name, phone, dateOfBirth, zipCode });
+        delete req.body.token;
+        delete req.body.otp;
+        delete req.body.createdAt;
+        const user = await userService.create(req.body);
         if (user) {
             const emailData = {
                 to: user.email,
@@ -108,21 +117,26 @@ exports.createAccount = async (req, res) => {
 
 exports.editAccount = async (req, res) => {
     try {
-        const { email, firstName, name, phone, dateOfBirth, zipCode } = req.body;
-        if (!validateEmail(email)) {
+        if(!req.body.email) {
+            return res.status(400).json({
+                type: "error",
+                message: "Email address required"
+            });
+        }
+        if (!validateEmail(req.body.email)) {
             return res.status(400).json({
                 type: "error",
                 message: "Invalid email"
             });
         }
-        if ( await userService.isPhoneTaken(phone) ) {
+        if ( req.body.phone && await userService.isPhoneTaken(req.body.phone) ) {
             return res.status(400).json({
                 type: "error",
                 message: "The phone number you entered is already taken"
             });
         }
 
-        let user = await userService.getByEmail(email);
+        let user = await userService.getByEmail(req.body.email);
         if (!user) {
             return res.status(404).json({
                 type: "error",
@@ -130,7 +144,11 @@ exports.editAccount = async (req, res) => {
             });
         }
 
-        const updatedAccount = await userService.update(user._id, { firstName, name, phone, dateOfBirth, zipCode });
+        delete req.body.email;
+        delete req.body.token;
+        delete req.body.otp;
+        delete req.body.createdAt;
+        const updatedAccount = await userService.update(user._id, req.body);
         if(!updatedAccount) {
             return res.status(500).json({
                 type: "error",

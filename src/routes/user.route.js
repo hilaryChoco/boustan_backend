@@ -130,6 +130,9 @@ router.post("/auth/logout", userCtrl.logout);
  *                              zipCode:
  *                                  type: string
  *                                  required: true
+ *                              loyalties:
+ *                                  type: number
+ *                                  required: false
  *                          example:
  *                              email: "john@email.com"
  *                              firstName: "John"
@@ -137,6 +140,7 @@ router.post("/auth/logout", userCtrl.logout);
  *                              phone: "8521056"
  *                              dateOfBirth: "2001/05/17"
  *                              zipCode: "00000"
+ *                              loyalties: 1
  *          responses:
  *              '201':
  *                description: >
@@ -264,6 +268,9 @@ router.post("/auth/otp-validation", userCtrl.validateOTP);
  *                              zipCode:
  *                                  type: string
  *                                  required: true
+ *                              loyalties:
+ *                                  type: number
+ *                                  required: false
  *                          example:
  *                              email: "john@email.com"
  *                              firstName: "John"
@@ -271,6 +278,7 @@ router.post("/auth/otp-validation", userCtrl.validateOTP);
  *                              phone: "8521056"
  *                              dateOfBirth: "2001/05/17"
  *                              zipCode: "00000"
+ *                              loyalties: 1
  *          responses:
  *              '200':
  *                description: >

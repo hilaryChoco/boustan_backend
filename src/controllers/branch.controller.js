@@ -271,15 +271,125 @@ exports.availableMealPromoPriceAndStatus = async (req, res) => {
             });
         }
 
-        branchMeal.inPromo = status;
-        branchMeal.promoPrice = price;
-        branchMeal.endPromoDate = endPromoDate;
+        branchMeal.inPromo = !!status;
+        branchMeal.promoPrice = !status ? null : price;
+        branchMeal.endPromoDate = !status ? null : endPromoDate;
         await branch.save();
 
         return res.status(200).json({
             type: "success",
             message: "Branch meal updated",
             data: branch
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.getBranchMealsGroupedByCategory = async (req, res) => {
+    try {
+        let id = req.query.id;
+
+        let meals = await branchService.getBranchMealsGroupedByCategory(id);
+
+        return res.status(200).json({
+            type: "success",
+            data: meals
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.updateDeliveryMode = async (req, res) => {
+    try {
+        const id = req.query.id;
+        let { branch, home } = req.body;
+        branch = !!branch;
+        home = !!home;
+
+        let exist = await branchService.getById(id);
+        if(!exist) {
+            return res.status(404).json({
+                type: "error",
+                message: "Branch not found"
+            });
+        }
+
+        let updatedBranch = await branchService.update(id, { deliveryMode: {branch, home} });
+        if(!updatedBranch) {
+            return res.status(500).json({
+                type: "error",
+                message: "Error updating branch delivery mode"
+            });
+        }
+
+        return res.status(200).json({
+            type: "success",
+            message: "Branch delivery mode updated",
+            data: updatedBranch
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.updateLoyaltyPoints = async (req, res) => {
+    try {
+        const id = req.query.id;
+        let loyalties = req.body.loyalties;
+
+        let exist = await branchService.getById(id);
+        if(!exist) {
+            return res.status(404).json({
+                type: "error",
+                message: "Branch not found"
+            });
+        }
+
+        let updatedBranch = await branchService.update(id, { loyalties });
+        if(!updatedBranch) {
+            return res.status(500).json({
+                type: "error",
+                message: "Error updating branch loyalty point"
+            });
+        }
+
+        return res.status(200).json({
+            type: "success",
+            message: "Branch loyalty point updated",
+            data: updatedBranch
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.getNearByBranches = async (req, res) => {
+    try {
+        let coordinates = req.body.coordinates;
+
+        let branches = await branchService.getNearByBranches(coordinates);
+
+        return res.status(200).json({
+            type: "success",
+            data: branches
         });
     } catch (error) {
         return res.status(500).json({

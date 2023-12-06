@@ -271,3 +271,28 @@ exports.paginateAccountsList = async (req, res) => {
         });
     }
 }
+
+exports.getLoyaltyPoint = async (req, res) => {
+    try {
+        let id = req.query.id;
+
+        let user = await userService.getById(id);
+        if (!user) {
+            return res.status(404).json({
+                type: "error",
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json({
+            type: "success",
+            data: user.loyalties
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}

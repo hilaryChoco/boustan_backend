@@ -21,6 +21,10 @@ const mealSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.ObjectId,
         ref: "Option"
     }],
+    loyalties: {
+        type: Number,
+        default: 0
+    },
     categoryId: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: "Category"

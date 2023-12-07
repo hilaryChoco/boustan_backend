@@ -34,6 +34,10 @@ const userSchema = new mongoose.Schema({
     token: {
         type: String
     },
+    loyalties: {
+        type: Number,
+        default: 0
+    },
     createdAt: {
         type: Date,
         default: Date.now,

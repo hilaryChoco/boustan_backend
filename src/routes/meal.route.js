@@ -139,6 +139,9 @@ router.get("/by-category", isAuth, mealCtrl.getAllByCategoryId);
  *                                  items:
  *                                      type: string
  *                                      required: true
+ *                              loyalties:
+ *                                  type: number
+ *                                  required: false
  *                          example:
  *                              name: "Meal1"
  *                              description: "Meal description"
@@ -146,6 +149,7 @@ router.get("/by-category", isAuth, mealCtrl.getAllByCategoryId);
  *                              price: "2000"
  *                              categoryId: "1205"
  *                              optionIds: ["123", "456"]
+ *                              loyalties: 1
  *          responses:
  *              '201':
  *                description: >
@@ -205,6 +209,9 @@ router.post("/create", isAuth, mealCtrl.create);
  *                                  items:
  *                                      type: string
  *                                      required: true
+ *                              loyalties:
+ *                                  type: number
+ *                                  required: false
  *                          example:
  *                              name: "Meal2"
  *                              description: "Meal description"
@@ -212,6 +219,7 @@ router.post("/create", isAuth, mealCtrl.create);
  *                              price: "2500"
  *                              categoryId: "1215"
  *                              optionIds: ["103", "406"]
+ *                              loyalties: 1
  *          responses:
  *              '200':
  *                description: >

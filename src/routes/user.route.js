@@ -45,6 +45,36 @@ const { isAuth } = require('../middleware/auth');
  */
 router.get("/", isAuth, userCtrl.paginateAccountsList);
 
+/**
+ * @swagger
+ *  /api/users/loyaltypoint:
+ *      get:
+ *          summary: Displays a user's loyalty point
+ *          tags:
+ *              - Users
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: id
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: User ID
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Returns a user's loyalty point
+ *              '404':
+ *                description: >
+ *                    User not found
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/loyaltypoint", isAuth, userCtrl.getLoyaltyPoint);
+
 // -----------  POST ROUTES  -------------
 
 /**

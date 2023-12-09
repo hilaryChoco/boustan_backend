@@ -383,7 +383,8 @@ exports.updateLoyaltyPoints = async (req, res) => {
 
 exports.getNearByBranches = async (req, res) => {
     try {
-        let coordinates = req.body.coordinates;
+        let { longitude, latitude } = req.query;
+        let coordinates = [Number(longitude), Number(latitude)];
 
         let branches = await branchService.getNearByBranches(coordinates);
 
@@ -392,6 +393,7 @@ exports.getNearByBranches = async (req, res) => {
             data: branches
         });
     } catch (error) {
+        console.log("Error: ", error);
         return res.status(500).json({
             type: "error",
             message: "Server Error",

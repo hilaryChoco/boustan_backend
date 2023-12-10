@@ -76,7 +76,6 @@ const branchSchema = new mongoose.Schema({
     }
 });
 
-branchSchema.index({ location: '2dsphere' });
 const Branch = mongoose.model("Branch", branchSchema);
 
 module.exports = Branch;

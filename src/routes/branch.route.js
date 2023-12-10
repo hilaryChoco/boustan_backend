@@ -115,6 +115,34 @@ router.get("/meals", isAuth, branchCtrl.getBranchMeals);
  */
 router.get("/meals-by-category", isAuth, branchCtrl.getBranchMealsGroupedByCategory);
 
+/**
+ * @swagger
+ *  /api/branches/near:
+ *      get:
+ *          summary: Get near-by branches
+ *          tags:
+ *              - Branches
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: longitude
+ *                schema:
+ *                  type: number
+ *                description: Longitude of the point
+ *              - in: query
+ *                name: latitude
+ *                schema:
+ *                  type: number
+ *                description: Latitude of the point
+ *          responses:
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/near", isAuth, branchCtrl.getNearByBranches);
+
 // -----------  POST ROUTES  -------------
 
 /**
@@ -163,8 +191,8 @@ router.get("/meals-by-category", isAuth, branchCtrl.getBranchMealsGroupedByCateg
  *                          example:
  *                              name: "Branch_1"
  *                              location: {
- *                                  type: "point",
- *                                  coordinates: [125, 586]
+ *                                  type: "Point",
+ *                                  coordinates: [-108, 41]
  *                              }
  *                              hours: {
  *                                  day: "Monday",
@@ -181,39 +209,6 @@ router.get("/meals-by-category", isAuth, branchCtrl.getBranchMealsGroupedByCateg
  *
  */
 router.post("/create", isAuth, branchCtrl.create);
-
-/**
- * @swagger
- *  /api/branches/near:
- *      post:
- *          summary: Get near-by branches
- *          tags:
- *              - Branches
- *          security:
- *              - bearerAuth: []
- *          requestBody:
- *              required: true
- *              content:
- *                  application/json:
- *                      schema:
- *                          type: object
- *                          properties:
- *                              coordinates:
- *                                  type: array
- *                                  items:
- *                                      type: number
- *                          example:
- *                              coordinates: [125, 586]
- *          responses:
- *              '201':
- *                description: >
- *                    Branch successfully created
- *              '500':
- *                  description: >
- *                    Server Error || Branch creation failure
- *
- */
-router.post("/near", isAuth, branchCtrl.getNearByBranches);
 
 // -----------  PUT ROUTES  -------------
 
@@ -266,8 +261,8 @@ router.post("/near", isAuth, branchCtrl.getNearByBranches);
  *                                              required: true
  *                          example:
  *                              location: {
- *                                  type: "point",
- *                                  coordinates: [125, 586]
+ *                                  type: "Point",
+ *                                  coordinates: [-109, 41]
  *                              }
  *                              hours: {
  *                                  day: "Monday",

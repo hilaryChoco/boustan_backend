@@ -106,19 +106,15 @@ exports.getBranchMealsGroupedByCategory = async (id) => {
 }
 
 exports.getNearByBranches = async(coordinates) => {
-    // const location = {
-    //   type: 'Point',
-    //   coordinates: [longitude, latitude] // Specify the coordinates of the point
-    // };
     return Branch.aggregate([
         {
           $geoNear: {
             near: {
                 type: 'Point',
-                coordinates: coordinates, // Replace with your target coordinates
+                coordinates: coordinates,
             },
             distanceField: 'distance',
-            maxDistance: 10000.0, // Maximum distance in meters
+            maxDistance: 100000.0,
             spherical: true
           }
         }

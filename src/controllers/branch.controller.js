@@ -43,11 +43,20 @@ exports.create = async (req, res) => {
             data: branch
         });
     } catch (error) {
-        return res.status(500).json({
-            type: "error",
-            message: "Server Error",
-            error: error.stack
-        });
+        if(error.code === 16755) {
+            return res.status(500).json({
+                type: "error",
+                message: "Invalid geographic location",
+                error: error.stack
+            });
+        }
+        else {
+            return res.status(500).json({
+                type: "error",
+                message: "Server Error",
+                error: error.stack
+            });
+        }
     }
 }
 

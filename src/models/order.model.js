@@ -1,14 +1,35 @@
 const mongoose = require("mongoose");
 
+const itemSchema = new mongoose.Schema({
+    name: {
+        type: String,
+    },
+    price: {
+        type: Number
+    }
+});
+
+const optionSchema = new mongoose.Schema({
+    idOption: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "Option"
+    },
+    nameOption: {
+        type: String
+    },
+    items: [itemSchema]
+});
+
 const orderMealSchema = new mongoose.Schema({
-    mealName: {
+    idOrderMeal: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "Meal"
+    },
+    nameOrderMeal: {
         type: String,
         trim: true
     },
-    optionList: [{
-        type: String,
-        trim: true
-    }],
+    orderMealOptionList: [optionSchema],
     quantity: {
         type: Number
     }

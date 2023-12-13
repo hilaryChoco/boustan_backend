@@ -79,7 +79,3 @@ const branchSchema = new mongoose.Schema({
 const Branch = mongoose.model("Branch", branchSchema);
 
 module.exports = Branch;
-
-// using aggregation get an array of schemaB from schemaA and classify the return data by schemaC id found in schemaB
-// i also want ot return other fields of schemaC
-// why do I get repeated values of schemaB for some schemaC?

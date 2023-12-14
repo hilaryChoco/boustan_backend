@@ -9,7 +9,9 @@ exports.generateToken = (_id, email) => {
         );
         return token;
     } catch (error) {
+         console.log(error)
         return null;
+
     }
 }
 

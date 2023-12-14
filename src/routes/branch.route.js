@@ -143,6 +143,35 @@ router.get("/meals-by-category", isAuth, branchCtrl.getBranchMealsGroupedByCateg
  */
 router.get("/near", isAuth, branchCtrl.getNearByBranches);
 
+/**
+ * @swagger
+ *  /api/branches/get-one:
+ *      get:
+ *          summary: Displays a branch
+ *          tags:
+ *              - Branches
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: id
+ *                schema:
+ *                  type: string
+ *                description: Branch ID
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Returns a branch
+ *              '404':
+ *                description: >
+ *                    Branch not found
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/get-one", isAuth, branchCtrl.getById);
+
 // -----------  POST ROUTES  -------------
 
 /**

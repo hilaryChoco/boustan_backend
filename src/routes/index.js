@@ -7,6 +7,7 @@ const mealRoute = require("./meal.route");
 const imageUploadRoute = require("./imageUpload.route");
 const branchRoute = require("./branch.route");
 const orderRoute = require("./order.route");
+const adminRoute = require("./admin.route");
 
 
 const defaultRoutes = [
@@ -37,6 +38,10 @@ const defaultRoutes = [
   {
     path: '/orders',
     route: orderRoute
+  },
+  {
+    path: '/admins',
+    route: adminRoute
   },
 ];
 

@@ -410,3 +410,29 @@ exports.getNearByBranches = async (req, res) => {
         });
     }
 }
+
+exports.getById = async (req, res) => {
+    try {
+        const id = req.query.id;
+
+        let branch = await branchService.getById(id);
+        if(!branch) {
+            return res.status(404).json({
+                type: "error",
+                message: "Branch not found"
+            });
+        }
+
+        return res.status(200).json({
+            type: "success",
+            data: branch
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}

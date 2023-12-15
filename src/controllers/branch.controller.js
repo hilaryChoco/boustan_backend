@@ -99,7 +99,7 @@ exports.modifyAvailableMeals = async (req, res) => {
 exports.edit = async (req, res) => {
     try {
         let id = req.query.id;
-        let { location, hours } = req.body;
+        let { name, location, hours } = req.body;
 
         let branch = await branchService.getById(id);
         if(!branch) {
@@ -109,6 +109,7 @@ exports.edit = async (req, res) => {
             });
         }
 
+        branch.name = name ? name : branch.name;
         branch.location = location ? location : branch.location;
         branch.hours = hours ? hours : branch.hours;
         let updatedBranch = await branch.save();

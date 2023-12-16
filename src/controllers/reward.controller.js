@@ -1,4 +1,5 @@
 const { rewardService, mealService, userService, branchService } = require('../services');
+const orderCtrl = require('./order.controller');
 
 exports.create = async (req, res) => {
     try {
@@ -98,7 +99,7 @@ exports.getAll = async (req, res) => {
     }
 }
 
-exports.changeReward = async (req, res) => {
+exports.exchangeReward = async (req, res) => {
     try {
         let { userId, branchId, mealId, rewardId, deliveryType, deliveryPrice } = req.body;
 
@@ -154,27 +155,59 @@ exports.changeReward = async (req, res) => {
             await user.save();
             await branch.save();
 
-            // order object to register it as a new order
-            let order = {
+            let orderData = {
                 branch: branchId,
                 client: userId,
+                partialPrice: 0,
                 deliveryType: deliveryType,
                 deliveryPrice: deliveryPrice,
                 totalPrice: 0,
-                orderMeals: [{
+                rewardOrder: true,
+                orderMeals: [
+                  {
                     idOrderMeal: mealId,
                     nameOrderMeal: meal.name,
-                    quantity: 1,
-                    orderMealOptionList: [{
+                    quantity: 1
+                  }
+                ]
+            }
 
-                    }]
-                }]
+            let response = await orderCtrl.saveOrder(orderData);
+            if(response.type == "error") {
+                return res.status(400).json({
+                    type: "error",
+                    message: response.message
+                });
+            }
+            else if(response.type == "serverError") {
+                return res.status(500).json({
+                    type: "error",
+                    message: response.message
+                });
+            }
+            else if(response.type == "notFoundError") {
+                return res.status(404).json({
+                    type: "error",
+                    message: response.message
+                });
+            }
+            else if(response.type == "success") {
+                response.data.clientLoyalties = user.loyalties;
+                response.data.branchLoyalties = branch.loyalties;
+                return res.status(201).json({
+                    type: "success",
+                    message: "Reward successfully exchange",
+                    data: response.data
+                });
             }
         }
         else {
             // Lauch the payment route for the delivery fee
+            return res.status(400).json({
+                type: "error",
+                message: "Reward exchange with home delivery is not available at the moment, please try again later."
+            });
         }
-        
     } catch (error) {
         return res.status(500).json({
             type: "error",

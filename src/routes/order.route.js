@@ -82,12 +82,6 @@ router.get("/user", isAuth, orderCtrl.getUserOrders);
  *                              deliveryPrice:
  *                                  type: number
  *                                  required: true
- *                              tps:
- *                                  type: number
- *                                  required: true
- *                              tvq:
- *                                  type: number
- *                                  required: true
  *                              totalPrice:
  *                                  type: number
  *                                  required: true
@@ -96,35 +90,61 @@ router.get("/user", isAuth, orderCtrl.getUserOrders);
  *                                  items:
  *                                      type: "object"
  *                                      properties:
- *                                          mealName:
+ *                                          idOrderMeal:
+ *                                              type: string
+ *                                              required: true
+ *                                          nameOrderMeal:
  *                                              type: string
  *                                              required: true
  *                                          quantity:
  *                                              type: number
  *                                              required: true
- *                                          optionList:
+ *                                          orderMealOptionList:
  *                                              type: array
  *                                              items:
- *                                                  type: string
+ *                                                  type: "object"
+ *                                                  properties:
+ *                                                      idOption:
+ *                                                          type: string
+ *                                                          required: true
+ *                                                      nameOption:
+ *                                                          type: string
+ *                                                          required: true
+ *                                                      items:
+ *                                                          type: array
+ *                                                          items:
+ *                                                              type: "object"
+ *                                                              properties:
+ *                                                                  name:
+ *                                                                      type: string
+ *                                                                      required: true
+ *                                                                  price:
+ *                                                                      type: number
+ *                                                                      required: true
  *                          example:
  *                              branch: "458652"
  *                              email: "john@email.com"
  *                              partialPrice: 1500
  *                              deliveryType: "home"
  *                              deliveryPrice: 1000
- *                              tps: 10
- *                              tvq: 10
  *                              totalPrice: 2500
  *                              orderMeals: [
  *                                  {
- *                                      mealName: "Meal22",
+ *                                      idOrderMeal: "8520",
+ *                                      nameOrderMeal: "Meal22",
  *                                      quantity: 2,
- *                                      optionList: ["option_1", "option_2"]
- *                                  },
- *                                  {
- *                                      mealName: "Meal11",
- *                                      quantity: 1,
- *                                      optionList: ["option_3"]
+ *                                      orderMealOptionList: [
+ *                                          {
+ *                                              idOption: "7410",
+ *                                              nameOption: "Option85",
+ *                                              items: [
+ *                                                  {
+ *                                                      name: "Element1",
+ *                                                      price: 5000
+ *                                                  }
+ *                                              ]
+ *                                          }
+ *                                      ]
  *                                  }
  *                              ]
  *          responses:

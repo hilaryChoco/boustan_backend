@@ -64,6 +64,10 @@ const orderSchema = new mongoose.Schema({
     totalPrice: {
         type: Number
     },
+    rewardOrder: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now,

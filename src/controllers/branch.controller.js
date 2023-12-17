@@ -6,11 +6,33 @@ function paginateAndSortAvailableMeals(array, pageNumber, pageSize, order) {
         const sortOrderFactor = order.toLowerCase() === 'desc' ? -1 : 1;
         return (a.mealId.name > b.mealId.name ? 1 : -1) * sortOrderFactor;
     });
-    
+
     const startIndex = (pageNumber - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    
+
     return sortedArray.slice(startIndex, endIndex);
+}
+
+function getDistanceFromLatLonInKm(coord1, coord2) {
+    let lon1 = coord1[0];
+    let lat1 = coord1[1];
+    let lon2 = coord2[0];
+    let lat2 = coord2[1];
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in km
+    return d;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI / 180)
 }
 
 exports.create = async (req, res) => {
@@ -30,7 +52,7 @@ exports.create = async (req, res) => {
         });
 
         let branch = await branchService.create({ name, location, hours, availableMeals });
-        if(!branch) {
+        if (!branch) {
             return res.status(500).json({
                 type: "error",
                 message: "Branch creation failure"
@@ -43,7 +65,7 @@ exports.create = async (req, res) => {
             data: branch
         });
     } catch (error) {
-        if(error.code === 16755) {
+        if (error.code === 16755) {
             return res.status(500).json({
                 type: "error",
                 message: "Invalid geographic location",
@@ -66,7 +88,7 @@ exports.modifyAvailableMeals = async (req, res) => {
         let availableMeals = req.body.availableMeals;
 
         let branch = await branchService.getById(id);
-        if(!branch) {
+        if (!branch) {
             return res.status(404).json({
                 type: "error",
                 message: "Branch not found"
@@ -75,7 +97,7 @@ exports.modifyAvailableMeals = async (req, res) => {
 
         branch.availableMeals = availableMeals;
         let updatedBranch = await branch.save();
-        if(!updatedBranch) {
+        if (!updatedBranch) {
             return res.status(500).json({
                 type: "error",
                 message: "Error setting branch available meals"
@@ -102,7 +124,7 @@ exports.edit = async (req, res) => {
         let { name, location, hours } = req.body;
 
         let branch = await branchService.getById(id);
-        if(!branch) {
+        if (!branch) {
             return res.status(404).json({
                 type: "error",
                 message: "Branch not found"
@@ -113,7 +135,7 @@ exports.edit = async (req, res) => {
         branch.location = location ? location : branch.location;
         branch.hours = hours ? hours : branch.hours;
         let updatedBranch = await branch.save();
-        if(!updatedBranch) {
+        if (!updatedBranch) {
             return res.status(500).json({
                 type: "error",
                 message: "An error occured during branch modification"
@@ -139,7 +161,7 @@ exports.delete = async (req, res) => {
         let id = req.query.id;
 
         let branch = await branchService.getById(id);
-        if(!branch) {
+        if (!branch) {
             return res.status(404).json({
                 type: "error",
                 message: "Branch not found"
@@ -147,7 +169,7 @@ exports.delete = async (req, res) => {
         }
 
         let deletedBranch = await branchService.delete(id);
-        if(!deletedBranch) {
+        if (!deletedBranch) {
             return res.status(500).json({
                 type: "error",
                 message: "Branch could not be deleted due to an issue"
@@ -190,7 +212,7 @@ exports.getBranchMeals = async (req, res) => {
         let { id, limit, page, order } = req.query;
 
         let branch = await branchService.getById(id);
-        if(!branch) {
+        if (!branch) {
             return res.status(404).json({
                 type: "error",
                 message: "Branch not found"
@@ -219,7 +241,7 @@ exports.modifyAvailableMealQuantity = async (req, res) => {
         let quantity = req.body.quantity;
 
         let branch = await branchService.getById(branchId);
-        if(!branch) {
+        if (!branch) {
             return res.status(404).json({
                 type: "error",
                 message: "Branch not found"
@@ -227,7 +249,7 @@ exports.modifyAvailableMealQuantity = async (req, res) => {
         }
 
         let branchMeal = branch.availableMeals.find(x => x.mealId._id.toString() === mealId.toString());
-        if(!branchMeal) {
+        if (!branchMeal) {
             return res.status(404).json({
                 type: "error",
                 message: "Meal not found in branch"
@@ -266,7 +288,7 @@ exports.availableMealPromoPriceAndStatus = async (req, res) => {
         }
 
         let branch = await branchService.getById(branchId);
-        if(!branch) {
+        if (!branch) {
             return res.status(404).json({
                 type: "error",
                 message: "Branch not found"
@@ -274,7 +296,7 @@ exports.availableMealPromoPriceAndStatus = async (req, res) => {
         }
 
         let branchMeal = branch.availableMeals.find(x => x.mealId._id.toString() === mealId.toString());
-        if(!branchMeal) {
+        if (!branchMeal) {
             return res.status(404).json({
                 type: "error",
                 message: "Meal not found in branch"
@@ -327,15 +349,15 @@ exports.updateDeliveryMode = async (req, res) => {
         home = !!home;
 
         let exist = await branchService.getById(id);
-        if(!exist) {
+        if (!exist) {
             return res.status(404).json({
                 type: "error",
                 message: "Branch not found"
             });
         }
 
-        let updatedBranch = await branchService.update(id, { deliveryMode: {branch, home} });
-        if(!updatedBranch) {
+        let updatedBranch = await branchService.update(id, { deliveryMode: { branch, home } });
+        if (!updatedBranch) {
             return res.status(500).json({
                 type: "error",
                 message: "Error updating branch delivery mode"
@@ -362,7 +384,7 @@ exports.updateLoyaltyPoints = async (req, res) => {
         let loyalties = req.body.loyalties;
 
         let exist = await branchService.getById(id);
-        if(!exist) {
+        if (!exist) {
             return res.status(404).json({
                 type: "error",
                 message: "Branch not found"
@@ -370,7 +392,7 @@ exports.updateLoyaltyPoints = async (req, res) => {
         }
 
         let updatedBranch = await branchService.update(id, { loyalties });
-        if(!updatedBranch) {
+        if (!updatedBranch) {
             return res.status(500).json({
                 type: "error",
                 message: "Error updating branch loyalty point"
@@ -417,7 +439,7 @@ exports.getById = async (req, res) => {
         const id = req.query.id;
 
         let branch = await branchService.getById(id);
-        if(!branch) {
+        if (!branch) {
             return res.status(404).json({
                 type: "error",
                 message: "Branch not found"
@@ -427,6 +449,36 @@ exports.getById = async (req, res) => {
         return res.status(200).json({
             type: "success",
             data: branch
+        });
+    } catch (error) {
+        console.log("Error: ", error);
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.getDistanceBetweenTwoCoordinates = async (req, res) => {
+    try {
+        let { branchId, longitude, latitude } = req.query;
+        let coordinates = [Number(longitude), Number(latitude)];
+
+        let branch = await branchService.getById(branchId);
+        if (!branch) {
+            return res.status(404).json({
+                type: "error",
+                message: "Branch not found"
+            });
+        }
+
+        let branchCoordinates = [branch.location.coordinates["0"], branch.location.coordinates["1"]];
+        let distance = getDistanceFromLatLonInKm(coordinates, branchCoordinates) * 1000;
+
+        return res.status(200).json({
+            type: "success",
+            data: distance
         });
     } catch (error) {
         console.log("Error: ", error);

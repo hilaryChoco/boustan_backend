@@ -267,3 +267,28 @@ exports.getNearByBranches = async (coordinates) => {
     }
   ]);
 }
+
+// exports.getDistanceBetweenTwoCoordinates = async(coord1, coord2) => {
+//   return await Branch.aggregate([
+//     {
+//       $geoNear: {
+//         near: {
+//           type: 'Point',
+//           coordinates: coord1,
+//         },
+//         distanceField: 'distance',
+//         spherical: true,
+//         query: {
+//           location: {
+//             $near: {
+//               $geometry: {
+//                 type: 'Point',
+//                 coordinates: coord2,
+//               },
+//             },
+//           },
+//         },
+//       },
+//     },
+//   ]);
+// }

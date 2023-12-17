@@ -88,6 +88,61 @@ router.get("/", isAuth, rewardCtrl.getAll);
  */
 router.post("/create", isAuth, rewardCtrl.create);
 
+/**
+ * @swagger
+ *  /api/rewards/exchange:
+ *      post:
+ *          summary: Exchange a reward
+ *          tags:
+ *              - Rewards
+ *          security:
+ *              - bearerAuth: []
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              userId:
+ *                                  type: string
+ *                                  required: true
+ *                              branchId:
+ *                                  type: string
+ *                                  required: true
+ *                              mealId:
+ *                                  type: string
+ *                                  required: true
+ *                              rewardId:
+ *                                  type: string
+ *                                  required: true
+ *                              deliveryType:
+ *                                  type: string
+ *                                  required: true
+ *                              deliveryPrice:
+ *                                  type: number
+ *                                  required: true
+ *                          example:
+ *                              userId: "753"
+ *                              branchId: "8521"
+ *                              mealId: "8521"
+ *                              rewardId: "8521"
+ *                              deliveryType: "branch"
+ *                              deliveryPrice: 0
+ *          responses:
+ *              '201':
+ *                description: >
+ *                    Reward successfully created
+ *              '404':
+ *                description: >
+ *                    Some meals are not recognized
+ *              '500':
+ *                  description: >
+ *                    Server Error || Reward creation failure
+ *
+ */
+router.post("/exchange", isAuth, rewardCtrl.exchangeReward);
+
 // -----------  PUT ROUTES  -------------
 
 

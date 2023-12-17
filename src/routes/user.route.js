@@ -75,6 +75,36 @@ router.get("/", isAuth, userCtrl.paginateAccountsList);
  */
 router.get("/loyaltypoint", isAuth, userCtrl.getLoyaltyPoint);
 
+/**
+ * @swagger
+ *  /api/users/address:
+ *      get:
+ *          summary: Displays a list of user delivery addresses
+ *          tags:
+ *              - Users
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: userId
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: User Id
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Returns a list of user addresses
+ *              '404':
+ *                description: >
+ *                    User not found
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/address", isAuth, userCtrl.getUserDeliveryAddresses);
+
 // -----------  POST ROUTES  -------------
 
 /**
@@ -262,6 +292,61 @@ router.post("/auth/resend-otp", userCtrl.login);
  */
 router.post("/auth/otp-validation", userCtrl.validateOTP);
 
+/**
+ * @swagger
+ *  /api/users/address/add:
+ *      post:
+ *          summary: Add user delivery address
+ *          tags:
+ *              - Users
+ *          security:
+ *              - bearerAuth: []
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              userId:
+ *                                  type: string
+ *                                  required: true
+ *                              address:
+ *                                  type: string
+ *                                  required: true
+ *                              longitude:
+ *                                  type: number
+ *                                  required: true
+ *                              latitude:
+ *                                  type: number
+ *                                  required: true
+ *                              apartment:
+ *                                  type: string
+ *                                  required: true
+ *                              company:
+ *                                  type: string
+ *                                  required: true
+ *                          example:
+ *                              userId: "98531"
+ *                              address: "address_1"
+ *                              longitude: 111
+ *                              latitude: 41
+ *                              apartment: "apartment_1"
+ *                              company: "company_1"
+ *          responses:
+ *              '201':
+ *                description: >
+ *                    Delivery address added successfully
+ *              '404':
+ *                description: >
+ *                    User not found
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.post("/address/add", isAuth, userCtrl.addDeliveryAddress);
+
 // -----------  PUT ROUTES  -------------
 
 /**
@@ -326,6 +411,70 @@ router.post("/auth/otp-validation", userCtrl.validateOTP);
  */
 router.put("/edit", isAuth, userCtrl.editAccount);
 
+/**
+ * @swagger
+ *  /api/users/address/edit:
+ *      put:
+ *          summary: Modify user delivery address
+ *          tags:
+ *              - Users
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: userId
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: User id
+ *              - in: query
+ *                name: addressId
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Address id
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              address:
+ *                                  type: string
+ *                                  required: true
+ *                              longitude:
+ *                                  type: number
+ *                                  required: true
+ *                              latitude:
+ *                                  type: number
+ *                                  required: true
+ *                              apartment:
+ *                                  type: string
+ *                                  required: true
+ *                              company:
+ *                                  type: string
+ *                                  required: true
+ *                          example:
+ *                              address: "address_1"
+ *                              longitude: 111
+ *                              latitude: 41
+ *                              apartment: "apartment_1"
+ *                              company: "company_1"
+ *          responses:
+ *              '201':
+ *                description: >
+ *                    Delivery address added successfully
+ *              '404':
+ *                description: >
+ *                    User not found
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.put("/address/edit", isAuth, userCtrl.editDeliveryAddress);
+
 // -----------  DELETE ROUTES  -------------
 
 /**
@@ -360,6 +509,42 @@ router.put("/edit", isAuth, userCtrl.editAccount);
  *
  */
 router.delete("/delete", isAuth, userCtrl.deleteAccount);
+
+/**
+ * @swagger
+ *  /api/users/address/delete:
+ *      delete:
+ *          summary: Delete user delivery address
+ *          tags:
+ *              - Users
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: userId
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: User Id
+ *              - in: query
+ *                name: addressId
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Address Id to be deleted
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Delivery address successfully deleted
+ *              '404':
+ *                description: >
+ *                    User not found || Delivery address not found
+ *              '500':
+ *                  description: >
+ *                    Server Error || An error has occured, please try again later
+ *
+ */
+router.delete("/address/delete", isAuth, userCtrl.deleteDeliveryAddress);
 
 
 module.exports = router;

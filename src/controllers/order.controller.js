@@ -37,7 +37,9 @@ exports.saveOrder = async (body) => {
 
     let tps = 0.05;
     let tvq = 0.0995;
-    let loyaltyPoint = partialPrice = totalPrice = 0;
+    let loyaltyPoint = 0;
+    let partialPrice = 0;
+    let totalPrice = 0;
     let dbMeals = await mealService.getAll();
     if(body.orderMeals.length > 0) {
         let dbMealIds = dbMeals.map(item => item._id.toString());
@@ -49,59 +51,65 @@ exports.saveOrder = async (body) => {
                 }
             }
 
-            let optionsPrice = 0;
-            let options = meal.orderMealOptionList;
-            let dbMeal = dbMeals.find(x => x._id.toString() === meal.idOrderMeal.toString());
-            let dbMealOptions = dbMeal.optionIds;
-
-            let optionsExist = options.every(item => dbMealOptions.some(element => item.idOption.toString() === element._id.toString()));
-            if(!optionsExist) {
-                return {
-                    type: "error",
-                    message: "Some options are not available for the meals choosen"
-                }
-            }
-
-            let itemsExist = options.every(options => {
-                return options.items.every(item => {
-                    let optionElementPrice = 0;
-                    const dbMealOptionElement = dbMealOptions.some(option => option.elements.find(element => {
-                        optionElementPrice = element.price;
-                        return item.name === element.name
-                    }) )
+            if(!body.rewardOrder) {
+                let optionsPrice = 0;
+                let options = meal.orderMealOptionList;
+                let dbMeal = dbMeals.find(x => x._id.toString() === meal.idOrderMeal.toString());
+                let dbMealOptions = dbMeal.optionIds;
     
-                    return dbMealOptionElement && parseFloat(item.price) === parseFloat(optionElementPrice);
-                });
-            });
-            if(!itemsExist) {
-                return {
-                    type: "error",
-                    message: "Some items are not found in these meals or some prices don't match"
+                let optionsExist = options.every(item => dbMealOptions.some(element => item.idOption.toString() === element._id.toString()));
+                if(!optionsExist) {
+                    return {
+                        type: "error",
+                        message: "Some options are not available for the meals choosen"
+                    }
                 }
-            }
-
-            loyaltyPoint += dbMeal.loyalties;
-            optionsPrice += parseFloat(options.map(option => {
-                let itemsPrice = 0;
-                option.items.forEach(item => {
-                    itemsPrice += parseFloat(item.price);
+    
+                let itemsExist = options.every(options => {
+                    return options.items.every(item => {
+                        let optionElementPrice = 0;
+                        const dbMealOptionElement = dbMealOptions.some(option => option.elements.find(element => {
+                            optionElementPrice = element.price;
+                            return item.name === element.name
+                        }) )
+        
+                        return dbMealOptionElement && parseFloat(item.price) === parseFloat(optionElementPrice);
+                    });
                 });
-                return itemsPrice;
-            }));
-            partial = parseInt(meal.quantity) * (parseFloat(dbMeal.price) + optionsPrice);
-            partialPrice += partial;
+                if(!itemsExist) {
+                    return {
+                        type: "error",
+                        message: "Some items are not found in these meals or some prices don't match"
+                    }
+                }
+    
+                loyaltyPoint += dbMeal.loyalties;
+                optionsPrice += parseFloat(options.map(option => {
+                    let itemsPrice = 0;
+                    option.items.forEach(item => {
+                        itemsPrice += parseFloat(item.price);
+                    });
+                    return itemsPrice;
+                }));
+                let partial = parseInt(meal.quantity) * (parseFloat(dbMeal.price) + optionsPrice);
+                partialPrice += partial;
+            }
         };
     }
 
-    totalPrice += partialPrice + parseFloat(body.deliveryPrice) + tps * ((partialPrice + parseFloat(body.deliveryPrice)) / 100) + tvq * ((partialPrice + parseFloat(body.deliveryPrice)) / 100);
-
-    if (totalPrice != parseFloat(body.totalPrice) || partialPrice != parseFloat(body.partialPrice)) {
-        return {
-            type: "error",
-            message:"Partial price or total price don't match"
+    if(!body.rewardOrder) {
+        totalPrice += partialPrice + parseFloat(body.deliveryPrice) + tps * ((partialPrice + parseFloat(body.deliveryPrice)) / 100) + tvq * ((partialPrice + parseFloat(body.deliveryPrice)) / 100);
+    
+        if (totalPrice != parseFloat(body.totalPrice) || partialPrice != parseFloat(body.partialPrice)) {
+            return {
+                type: "error",
+                message:"Partial price or total price don't match"
+            }
         }
     }
 
+    body.tps = tps;
+    body.tvq = tvq;
     let order = await orderService.create(body);
     if(!order) {
         return {
@@ -110,10 +118,12 @@ exports.saveOrder = async (body) => {
         }
     }
 
-    client.loyalties += loyaltyPoint;
-    branch.loyalties -= loyaltyPoint;
-    await client.save();
-    await branch.save();
+    if(!body.rewardOrder) {
+        client.loyalties += loyaltyPoint;
+        branch.loyalties -= loyaltyPoint;
+        await client.save();
+        await branch.save();
+    }
 
     return {
         type: "success",

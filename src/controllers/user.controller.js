@@ -298,3 +298,136 @@ exports.getLoyaltyPoint = async (req, res) => {
         });
     }
 }
+
+exports.addDeliveryAddress = async (req, res) => {
+    try {
+        let { userId, address, longitude, latitude, apartment, company } = req.body;
+
+        let user = await userService.getById(userId);
+        if (!user) {
+            return res.status(404).json({
+                type: "error",
+                message: "User not found"
+            });
+        }
+
+        user.deliveryAddress.push({ address, longitude: parseFloat(longitude), latitude: parseFloat(latitude), apartment, company });
+        await user.save();
+
+        return res.status(201).json({
+            type: "success",
+            message: "Delivery address added successfully",
+            data: user
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.editDeliveryAddress = async (req, res) => {
+    try {
+        let { userId, addressId } = req.query;
+        let { address, longitude, latitude, apartment, company } = req.body;
+
+        let user = await userService.getById(userId);
+        if (!user) {
+            return res.status(404).json({
+                type: "error",
+                message: "User not found"
+            });
+        }
+
+        let deliveryAddress = user.deliveryAddress.find(item => item._id.toString() === addressId.toString());
+        if(!deliveryAddress) {
+            return res.status(404).json({
+                type: "error",
+                message: "Delivery address not found"
+            });
+        }
+
+        deliveryAddress.address = address ? address : deliveryAddress.address;
+        deliveryAddress.longitude = longitude ? longitude : deliveryAddress.longitude;
+        deliveryAddress.latitude = latitude ? latitude : deliveryAddress.latitude;
+        deliveryAddress.apartment = apartment ? apartment : deliveryAddress.apartment;
+        deliveryAddress.company = company ? company : deliveryAddress.company;
+
+        await user.save();
+
+        return res.status(200).json({
+            type: "success",
+            message: "Delivery address modified successfully",
+            data: user
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.deleteDeliveryAddress = async (req, res) => {
+    try {
+        let { userId, addressId } = req.query;
+
+        let user = await userService.getById(userId);
+        if (!user) {
+            return res.status(404).json({
+                type: "error",
+                message: "User not found"
+            });
+        }
+
+        let addressIndex = user.deliveryAddress.findIndex(item => item._id.toString() === addressId.toString());
+        if(addressIndex < 0) {
+            return res.status(404).json({
+                type: "error",
+                message: "Delivery address not found"
+            });
+        }
+
+        user.deliveryAddress.splice(addressIndex, 1);
+        await user.save();
+
+        return res.status(200).json({
+            type: "success",
+            message: "Delivery address successfully deleted"
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.getUserDeliveryAddresses = async (req, res) => {
+    try {
+        let userId = req.query.userId;
+
+        let user = await userService.getById(userId);
+        if (!user) {
+            return res.status(404).json({
+                type: "error",
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json({
+            type: "success",
+            data: user.deliveryAddress
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}

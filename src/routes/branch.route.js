@@ -172,6 +172,39 @@ router.get("/near", isAuth, branchCtrl.getNearByBranches);
  */
 router.get("/get-one", isAuth, branchCtrl.getById);
 
+/**
+ * @swagger
+ *  /api/branches/distance-from-point:
+ *      get:
+ *          summary: Get near-by branches
+ *          tags:
+ *              - Branches
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: branchId
+ *                schema:
+ *                  type: string
+ *                description: Branch id
+ *              - in: query
+ *                name: longitude
+ *                schema:
+ *                  type: number
+ *                description: Longitude of the point
+ *              - in: query
+ *                name: latitude
+ *                schema:
+ *                  type: number
+ *                description: Latitude of the point
+ *          responses:
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/distance-from-point", isAuth, branchCtrl.getDistanceBetweenTwoCoordinates);
+
 // -----------  POST ROUTES  -------------
 
 /**

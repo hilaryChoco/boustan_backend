@@ -325,12 +325,31 @@ exports.availableMealPromoPriceAndStatus = async (req, res) => {
 exports.getBranchMealsGroupedByCategory = async (req, res) => {
     try {
         let id = req.query.id;
+        let categorizedMeals = [];
 
-        let meals = await branchService.getBranchMealsGroupedByCategory(id);
+        let branch = await branchService.getByIdAsObject(id);
+        branch.availableMeals.forEach(availability => {
+            let meal = availability.mealId;
+            meal.inPromo = availability.inPromo;
+            meal.promoPrice = availability.promoPrice;
+            meal.quantity = availability.quantity;
+            meal.endPromoDate = availability.endPromoDate;
+            let category = meal.categoryId;
+            delete meal.categoryId;
+            let index = categorizedMeals.findIndex(x => x._id.toString() === category._id.toString());
+            if(index < 0) {
+                let meals = [meal];
+                category.meals = meals;
+                categorizedMeals.push(category);
+            }
+            else {
+                categorizedMeals[index].meals.push(meal);
+            }
+        });
 
         return res.status(200).json({
             type: "success",
-            data: meals
+            data: categorizedMeals
         });
     } catch (error) {
         return res.status(500).json({

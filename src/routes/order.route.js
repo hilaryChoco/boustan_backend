@@ -47,6 +47,105 @@ const { isAuth } = require('../middleware/auth');
  */
 router.get("/user", isAuth, orderCtrl.getUserOrders);
 
+/**
+ * @swagger
+ *  /api/orders/branch:
+ *      get:
+ *          summary: Displays a branch's list of orders
+ *          tags:
+ *              - Orders
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: branchId
+ *                schema:
+ *                  type: string
+ *                description: Branch ID
+ *              - in: query
+ *                name: limit
+ *                schema:
+ *                  type: string
+ *                description: Number of items
+ *              - in: query
+ *                name: page
+ *                schema:
+ *                  type: string
+ *                description: Page number
+ *              - in: query
+ *                name: order
+ *                schema:
+ *                  type: string
+ *                description: Sorting order ["asc", "desc"]
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Returns a list of orders
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/branch", isAuth, orderCtrl.getBranchOrders);
+
+/**
+ * @swagger
+ *  /api/orders/get-one:
+ *      get:
+ *          summary: Displays a branch's details
+ *          tags:
+ *              - Orders
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: id
+ *                schema:
+ *                  type: string
+ *                description: Order ID
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Returns an order
+ *              '404':
+ *                description: >
+ *                    Order not found
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/get-one", isAuth, orderCtrl.getById);
+
+/**
+ * @swagger
+ *  /api/orders/change-proceed:
+ *      get:
+ *          summary: Change the order's proceed status
+ *          tags:
+ *              - Orders
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: id
+ *                schema:
+ *                  type: string
+ *                description: Order ID
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Proceed status changed successfully
+ *              '404':
+ *                description: >
+ *                    Order not found
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/change-proceed", isAuth, orderCtrl.changeProceedValue);
+
 // -----------  POST ROUTES  -------------
 
 /**
@@ -167,7 +266,35 @@ router.post("/create", isAuth, orderCtrl.create);
 
 // -----------  DELETE ROUTES  -------------
 
-
+/**
+ * @swagger
+ *  /api/orders/delete:
+ *      delete:
+ *          summary: Delete an order
+ *          tags:
+ *              - Orders
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: id
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Order ID
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Order successfully deleted
+ *              '404':
+ *                description: >
+ *                    Order not found
+ *              '500':
+ *                  description: >
+ *                    Server Error || An error occured, please try again later
+ *
+ */
+router.delete("/delete", isAuth, orderCtrl.delete);
 
 
 module.exports = router;

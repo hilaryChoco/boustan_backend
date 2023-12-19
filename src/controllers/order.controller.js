@@ -56,6 +56,12 @@ exports.saveOrder = async (body) => {
                 let options = meal.orderMealOptionList;
                 let dbMeal = dbMeals.find(x => x._id.toString() === meal.idOrderMeal.toString());
                 let dbMealOptions = dbMeal.optionIds;
+                if(dbMeal.name != meal.nameOrderMeal) {
+                    return {
+                        type: "error",
+                        message: "Some meal names don't match"
+                    }
+                }
 
                 let optionsExist = options.every(item => dbMealOptions.some(element => item.idOption.toString() === element._id.toString()));
                 if (!optionsExist) {
@@ -99,7 +105,7 @@ exports.saveOrder = async (body) => {
 
     if (!body.rewardOrder) {
         totalPrice += partialPrice + parseFloat(body.deliveryPrice) + tps * ((partialPrice + parseFloat(body.deliveryPrice)) / 100) + tvq * ((partialPrice + parseFloat(body.deliveryPrice)) / 100);
-        
+
         totalPrice = parseFloat(totalPrice.toFixed(5));
 
         if (totalPrice != parseFloat(body.totalPrice) || partialPrice != parseFloat(body.partialPrice)) {

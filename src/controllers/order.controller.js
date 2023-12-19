@@ -36,7 +36,7 @@ exports.saveOrder = async (body) => {
     }
 
     let tps = 0.05;
-    let tvq = 0.0995;
+    let tvq = 0.09975;
     let loyaltyPoint = 0;
     let partialPrice = 0;
     let totalPrice = 0;

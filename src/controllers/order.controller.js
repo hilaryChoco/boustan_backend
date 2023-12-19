@@ -99,6 +99,8 @@ exports.saveOrder = async (body) => {
 
     if (!body.rewardOrder) {
         totalPrice += partialPrice + parseFloat(body.deliveryPrice) + tps * ((partialPrice + parseFloat(body.deliveryPrice)) / 100) + tvq * ((partialPrice + parseFloat(body.deliveryPrice)) / 100);
+        
+        totalPrice = parseFloat(totalPrice.toFixed(5));
 
         if (totalPrice != parseFloat(body.totalPrice) || partialPrice != parseFloat(body.partialPrice)) {
             return {

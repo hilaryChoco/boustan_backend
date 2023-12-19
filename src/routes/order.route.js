@@ -117,35 +117,6 @@ router.get("/branch", isAuth, orderCtrl.getBranchOrders);
  */
 router.get("/get-one", isAuth, orderCtrl.getById);
 
-/**
- * @swagger
- *  /api/orders/change-proceed:
- *      get:
- *          summary: Change the order's proceed status
- *          tags:
- *              - Orders
- *          security:
- *              - bearerAuth: []
- *          parameters:
- *              - in: query
- *                name: id
- *                schema:
- *                  type: string
- *                description: Order ID
- *          responses:
- *              '200':
- *                description: >
- *                    Proceed status changed successfully
- *              '404':
- *                description: >
- *                    Order not found
- *              '500':
- *                  description: >
- *                    Server Error
- *
- */
-router.get("/change-proceed", isAuth, orderCtrl.changeProceedValue);
-
 // -----------  POST ROUTES  -------------
 
 /**
@@ -262,6 +233,34 @@ router.post("/create", isAuth, orderCtrl.create);
 
 // -----------  PUT ROUTES  -------------
 
+/**
+ * @swagger
+ *  /api/orders/change-proceed:
+ *      put:
+ *          summary: Change the order's proceed status
+ *          tags:
+ *              - Orders
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: id
+ *                schema:
+ *                  type: string
+ *                description: Order ID
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Proceed status changed successfully
+ *              '404':
+ *                description: >
+ *                    Order not found
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.put("/change-proceed", isAuth, orderCtrl.changeProceedValue);
 
 
 // -----------  DELETE ROUTES  -------------

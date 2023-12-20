@@ -63,7 +63,26 @@ exports.saveOrder = async (body) => {
                     }
                 }
 
-                let optionsExist = options.every(item => dbMealOptions.some(element => item.idOption.toString() === element._id.toString()));
+                let optionNamesDontMatch = false;
+                let optionsExist = options.every(item => dbMealOptions.some(element => {
+                    let exist = item.idOption.toString() === element._id.toString();
+                    if(exist && (item.nameOption != element.name)) {
+                        optionNamesDontMatch = true;
+                        return true;
+                    }
+                    else if(exist && (item.nameOption == element.name)) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }));
+                if(optionNamesDontMatch) {
+                    return {
+                        type: "error",
+                        message: "Some option names don't match"
+                    }
+                }
                 if (!optionsExist) {
                     return {
                         type: "error",

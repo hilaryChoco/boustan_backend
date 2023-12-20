@@ -86,6 +86,125 @@ router.get("/", isAuth, branchCtrl.getAll);
  */
 router.get("/meals", isAuth, branchCtrl.getBranchMeals);
 
+/**
+ * @swagger
+ *  /api/branches/meals-by-category:
+ *      get:
+ *          summary: Displays a list of meals for a branch grouped by category
+ *          tags:
+ *              - Branches
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: id
+ *                schema:
+ *                  type: string
+ *                description: Branch ID
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Returns a list of branch meals
+ *              '404':
+ *                description: >
+ *                    Branch not found
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/meals-by-category", isAuth, branchCtrl.getBranchMealsGroupedByCategory);
+
+/**
+ * @swagger
+ *  /api/branches/near:
+ *      get:
+ *          summary: Get near-by branches
+ *          tags:
+ *              - Branches
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: longitude
+ *                schema:
+ *                  type: number
+ *                description: Longitude of the point
+ *              - in: query
+ *                name: latitude
+ *                schema:
+ *                  type: number
+ *                description: Latitude of the point
+ *          responses:
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/near", isAuth, branchCtrl.getNearByBranches);
+
+/**
+ * @swagger
+ *  /api/branches/get-one:
+ *      get:
+ *          summary: Displays a branch
+ *          tags:
+ *              - Branches
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: id
+ *                schema:
+ *                  type: string
+ *                description: Branch ID
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Returns a branch
+ *              '404':
+ *                description: >
+ *                    Branch not found
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/get-one", isAuth, branchCtrl.getById);
+
+/**
+ * @swagger
+ *  /api/branches/distance-from-point:
+ *      get:
+ *          summary: Get near-by branches
+ *          tags:
+ *              - Branches
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: branchId
+ *                schema:
+ *                  type: string
+ *                description: Branch id
+ *              - in: query
+ *                name: longitude
+ *                schema:
+ *                  type: number
+ *                description: Longitude of the point
+ *              - in: query
+ *                name: latitude
+ *                schema:
+ *                  type: number
+ *                description: Latitude of the point
+ *          responses:
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/distance-from-point", isAuth, branchCtrl.getDistanceBetweenTwoCoordinates);
+
 // -----------  POST ROUTES  -------------
 
 /**
@@ -131,44 +250,17 @@ router.get("/meals", isAuth, branchCtrl.getBranchMeals);
  *                                          close:
  *                                              type: number
  *                                              required: true
- *                              availableMeals:
- *                                  type: array
- *                                  items:
- *                                      type: "object"
- *                                      properties:
- *                                          mealId:
- *                                              type: string
- *                                              required: true
- *                                          inPromo:
- *                                              type: boolean
- *                                              required: true
- *                                          promoPrice:
- *                                              type: string
- *                                              required: false
- *                                          quantity:
- *                                              type: number
- *                                              required: true
- *                                          endPromoDate:
- *                                              type: string
- *                                              required: false
  *                          example:
  *                              name: "Branch_1"
  *                              location: {
- *                                  type: "point",
- *                                  coordinates: [125, 586]
+ *                                  type: "Point",
+ *                                  coordinates: [-108, 41]
  *                              }
  *                              hours: {
  *                                  day: "Monday",
  *                                  open: 480,
  *                                  close: 1439
  *                              }
- *                              availableMeals: [{
- *                                  mealId: "8952",
- *                                  inPromo: false,
- *                                  promoPrice: "1200",
- *                                  quantity: 6,
- *                                  endPromoDate: "2024/02/16",
- *                              }]
  *          responses:
  *              '201':
  *                description: >
@@ -231,8 +323,8 @@ router.post("/create", isAuth, branchCtrl.create);
  *                                              required: true
  *                          example:
  *                              location: {
- *                                  type: "point",
- *                                  coordinates: [125, 586]
+ *                                  type: "Point",
+ *                                  coordinates: [-109, 41]
  *                              }
  *                              hours: {
  *                                  day: "Monday",
@@ -401,9 +493,13 @@ router.put("/edit/meals/quantity", isAuth, branchCtrl.modifyAvailableMealQuantit
  *                              price:
  *                                  type: string
  *                                  required: true
+ *                              endPromoDate:
+ *                                  type: string
+ *                                  required: true
  *                          example:
  *                              status: true
  *                              price: "1400"
+ *                              endPromoDate: "2024/12/20"
  *          responses:
  *              '200':
  *                description: >
@@ -417,6 +513,94 @@ router.put("/edit/meals/quantity", isAuth, branchCtrl.modifyAvailableMealQuantit
  *
  */
 router.put("/edit/meals/statusAndPrice", isAuth, branchCtrl.availableMealPromoPriceAndStatus);
+
+/**
+ * @swagger
+ *  /api/branches/edit/deliverymode:
+ *      put:
+ *          summary: Modifies a branch delivery mode
+ *          tags:
+ *              - Branches
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: id
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Branch ID
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              branch:
+ *                                  type: boolean
+ *                                  required: true
+ *                              home:
+ *                                  type: boolean
+ *                                  required: true
+ *                          example:
+ *                              branch: true
+ *                              home: false
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Branch delivery mode updated
+ *              '404':
+ *                description: >
+ *                    Branch not found
+ *              '500':
+ *                  description: >
+ *                    Server Error || Error updating branch delivery mode
+ *
+ */
+router.put("/edit/deliverymode", isAuth, branchCtrl.updateDeliveryMode);
+
+/**
+ * @swagger
+ *  /api/branches/edit/loyaltypoint:
+ *      put:
+ *          summary: Modifies a branch's localty point
+ *          tags:
+ *              - Branches
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: id
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Branch ID
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              loyalties:
+ *                                  type: number
+ *                                  required: true
+ *                          example:
+ *                              loyalties: 1
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Branch localty point updated
+ *              '404':
+ *                description: >
+ *                    Branch not found
+ *              '500':
+ *                  description: >
+ *                    Server Error || Error updating branch localty point
+ *
+ */
+router.put("/edit/loyaltypoint", isAuth, branchCtrl.updateLoyaltyPoints);
 
 // -----------  DELETE ROUTES  -------------
 

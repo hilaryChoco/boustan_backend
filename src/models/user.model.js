@@ -1,5 +1,26 @@
 const mongoose = require("mongoose");
 
+const deliveryAddressSchema = new mongoose.Schema({
+    address: {
+        type: String,
+        trim: true
+    },
+    longitude: {
+        type: Number
+    },
+    latitude: {
+        type: Number
+    },
+    apartment: {
+        type: String,
+        trim: true
+    },
+    company: {
+        type: String,
+        trim: true
+    }
+});
+
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
@@ -15,6 +36,13 @@ const userSchema = new mongoose.Schema({
         trim: true,
         lowerCase: true
     },
+    phone: {
+        type: String,
+        trim: true
+    },
+    dateOfBirth: {
+        type: Date
+    },
     zipCode: {
         type: String,
         trim: true,
@@ -27,6 +55,11 @@ const userSchema = new mongoose.Schema({
     token: {
         type: String
     },
+    loyalties: {
+        type: Number,
+        default: 0
+    },
+    deliveryAddress: [ deliveryAddressSchema ],
     createdAt: {
         type: Date,
         default: Date.now,

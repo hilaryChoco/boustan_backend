@@ -3,28 +3,30 @@ const { mealService, categoryService, optionService } = require('../services');
 
 exports.create = async (req, res) => {
     try {
-        const { name, uri, price, optionIds, categoryId } = req.body;
-
-        let category = await categoryService.getById(categoryId);
-        if(!category) {
-            return res.status(404).json({
-                type: "error",
-                message: "Category not recognized"
-            });
-        }
-
-        let options = await optionService.getAll();
-        options = options.map(item => item._id.toString());
-        for (const id of optionIds) {
-            if( !(options.includes(id)) ) {
+        if(req.body.categoryId) {
+            let category = await categoryService.getById(req.body.categoryId);
+            if(!category) {
                 return res.status(404).json({
                     type: "error",
-                    message: "Some options are not recognized"
+                    message: "Category not recognized"
                 });
             }
-        };
+        }
 
-        let meal = await mealService.create({ name, uri, price, optionIds, categoryId });
+        if(req.body.optionIds) {
+            let options = await optionService.getAll();
+            options = options.map(item => item._id.toString());
+            for (const id of req.body.optionIds) {
+                if( !(options.includes(id)) ) {
+                    return res.status(404).json({
+                        type: "error",
+                        message: "Some options are not recognized"
+                    });
+                }
+            };
+        }
+
+        let meal = await mealService.create(req.body);
         if(!meal) {
             return res.status(500).json({
                 type: "error",
@@ -49,7 +51,6 @@ exports.create = async (req, res) => {
 exports.edit = async (req, res) => {
     try {
         let id = req.query.id;
-        let { name, uri, price, optionIds, categoryId } = req.body;
 
         let meal = await mealService.getById(id);
         if(!meal) {
@@ -59,26 +60,30 @@ exports.edit = async (req, res) => {
             });
         }
 
-        let category = await categoryService.getById(categoryId);
-        if(!category) {
-            return res.status(404).json({
-                type: "error",
-                message: "Category not recognized"
-            });
-        }
-
-        let options = await optionService.getAll();
-        options = options.map(item => item._id.toString());
-        for (const id of optionIds) {
-            if( !(options.includes(id)) ) {
+        if(req.body.categoryId) {
+            let category = await categoryService.getById(req.body.categoryId);
+            if(!category) {
                 return res.status(404).json({
                     type: "error",
-                    message: "Some options are not recognized"
+                    message: "Category not recognized"
                 });
             }
-        };
+        }
 
-        let updatedMeal = await mealService.update(id, { name, uri, price, optionIds, categoryId });
+        if(req.body.optionIds) {
+            let options = await optionService.getAll();
+            options = options.map(item => item._id.toString());
+            for (const id of req.body.optionIds) {
+                if( !(options.includes(id)) ) {
+                    return res.status(404).json({
+                        type: "error",
+                        message: "Some options are not recognized"
+                    });
+                }
+            };
+        }
+
+        let updatedMeal = await mealService.update(id, req.body);
         if(!updatedMeal) {
             return res.status(500).json({
                 type: "error",

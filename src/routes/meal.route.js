@@ -122,6 +122,9 @@ router.get("/by-category", isAuth, mealCtrl.getAllByCategoryId);
  *                              name:
  *                                  type: string
  *                                  required: true
+ *                              description:
+ *                                  type: string
+ *                                  required: true
  *                              uri:
  *                                  type: string
  *                                  required: true
@@ -136,12 +139,17 @@ router.get("/by-category", isAuth, mealCtrl.getAllByCategoryId);
  *                                  items:
  *                                      type: string
  *                                      required: true
+ *                              loyalties:
+ *                                  type: number
+ *                                  required: false
  *                          example:
  *                              name: "Meal1"
+ *                              description: "Meal description"
  *                              uri: "image-path"
  *                              price: "2000"
  *                              categoryId: "1205"
  *                              optionIds: ["123", "456"]
+ *                              loyalties: 1
  *          responses:
  *              '201':
  *                description: >
@@ -184,6 +192,9 @@ router.post("/create", isAuth, mealCtrl.create);
  *                              name:
  *                                  type: string
  *                                  required: true
+ *                              description:
+ *                                  type: string
+ *                                  required: true
  *                              uri:
  *                                  type: string
  *                                  required: true
@@ -198,12 +209,17 @@ router.post("/create", isAuth, mealCtrl.create);
  *                                  items:
  *                                      type: string
  *                                      required: true
+ *                              loyalties:
+ *                                  type: number
+ *                                  required: false
  *                          example:
  *                              name: "Meal2"
+ *                              description: "Meal description"
  *                              uri: "image-url"
  *                              price: "2500"
  *                              categoryId: "1215"
  *                              optionIds: ["103", "406"]
+ *                              loyalties: 1
  *          responses:
  *              '200':
  *                description: >

@@ -57,27 +57,41 @@ exports.logout = async (req, res) => {
 
 exports.createAccount = async (req, res) => {
     try {
-        const { email, firstName, name, zipCode } = req.body;
-        if (!validateEmail(email)) {
+        const { email, firstName, name, phone, dateOfBirth, zipCode } = req.body;
+        if(!req.body.email) {
+            return res.status(400).json({
+                type: "error",
+                message: "Email address required"
+            });
+        }
+        if (!validateEmail(req.body.email)) {
             return res.status(400).json({
                 type: "error",
                 message: "Invalid email"
             });
         }
-        if ( await userService.isEmailTaken(email) ) {
+        if ( await userService.isEmailTaken(req.body.email) ) {
             return res.status(400).json({
                 type: "error",
                 message: "The email you entered is already taken"
             });
         }
+        if ( req.body.phone && await userService.isPhoneTaken(phone) ) {
+            return res.status(400).json({
+                type: "error",
+                message: "The phone number you entered is already taken"
+            });
+        }
 
-        const otp = generateCode();
-        const user = await userService.create({ email, firstName, name, zipCode, otp });
+        delete req.body.token;
+        delete req.body.otp;
+        delete req.body.createdAt;
+        const user = await userService.create(req.body);
         if (user) {
             const emailData = {
                 to: user.email,
-                subject: "Authentication code",
-                description: `Use this code to log into your account.<br>Code: <b>${otp}</b>`
+                subject: "Welcome to Boustan",
+                description: `This mail is to inform you thhat your account has been successfully created on Boustan. Feel free to order your meals and have fun.`
             }
 
             res.status(201).json({
@@ -105,15 +119,26 @@ exports.createAccount = async (req, res) => {
 
 exports.editAccount = async (req, res) => {
     try {
-        const { email, firstName, name, zipCode } = req.body;
-        if (!validateEmail(email)) {
+        if(!req.body.email) {
+            return res.status(400).json({
+                type: "error",
+                message: "Email address required"
+            });
+        }
+        if (!validateEmail(req.body.email)) {
             return res.status(400).json({
                 type: "error",
                 message: "Invalid email"
             });
         }
+        if ( req.body.phone && await userService.isPhoneTaken(req.body.phone) ) {
+            return res.status(400).json({
+                type: "error",
+                message: "The phone number you entered is already taken"
+            });
+        }
 
-        let user = await userService.getByEmail(email);
+        let user = await userService.getByEmail(req.body.email);
         if (!user) {
             return res.status(404).json({
                 type: "error",
@@ -121,7 +146,11 @@ exports.editAccount = async (req, res) => {
             });
         }
 
-        const updatedAccount = await userService.update(user._id, { email, firstName, name, zipCode });
+        delete req.body.email;
+        delete req.body.token;
+        delete req.body.otp;
+        delete req.body.createdAt;
+        const updatedAccount = await userService.update(user._id, req.body);
         if(!updatedAccount) {
             return res.status(500).json({
                 type: "error",
@@ -235,6 +264,164 @@ exports.paginateAccountsList = async (req, res) => {
         return res.status(200).json({
             type: "success",
             data: accounts
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.getLoyaltyPoint = async (req, res) => {
+    try {
+        let id = req.query.id;
+
+        let user = await userService.getById(id);
+        if (!user) {
+            return res.status(404).json({
+                type: "error",
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json({
+            type: "success",
+            data: user.loyalties
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.addDeliveryAddress = async (req, res) => {
+    try {
+        let { userId, address, longitude, latitude, apartment, company } = req.body;
+
+        let user = await userService.getById(userId);
+        if (!user) {
+            return res.status(404).json({
+                type: "error",
+                message: "User not found"
+            });
+        }
+
+        user.deliveryAddress.push({ address, longitude: parseFloat(longitude), latitude: parseFloat(latitude), apartment, company });
+        await user.save();
+
+        return res.status(201).json({
+            type: "success",
+            message: "Delivery address added successfully",
+            data: user
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.editDeliveryAddress = async (req, res) => {
+    try {
+        let { userId, addressId } = req.query;
+        let { address, longitude, latitude, apartment, company } = req.body;
+
+        let user = await userService.getById(userId);
+        if (!user) {
+            return res.status(404).json({
+                type: "error",
+                message: "User not found"
+            });
+        }
+
+        let deliveryAddress = user.deliveryAddress.find(item => item._id.toString() === addressId.toString());
+        if(!deliveryAddress) {
+            return res.status(404).json({
+                type: "error",
+                message: "Delivery address not found"
+            });
+        }
+
+        deliveryAddress.address = address ? address : deliveryAddress.address;
+        deliveryAddress.longitude = longitude ? longitude : deliveryAddress.longitude;
+        deliveryAddress.latitude = latitude ? latitude : deliveryAddress.latitude;
+        deliveryAddress.apartment = apartment ? apartment : deliveryAddress.apartment;
+        deliveryAddress.company = company ? company : deliveryAddress.company;
+
+        await user.save();
+
+        return res.status(200).json({
+            type: "success",
+            message: "Delivery address modified successfully",
+            data: user
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.deleteDeliveryAddress = async (req, res) => {
+    try {
+        let { userId, addressId } = req.query;
+
+        let user = await userService.getById(userId);
+        if (!user) {
+            return res.status(404).json({
+                type: "error",
+                message: "User not found"
+            });
+        }
+
+        let addressIndex = user.deliveryAddress.findIndex(item => item._id.toString() === addressId.toString());
+        if(addressIndex < 0) {
+            return res.status(404).json({
+                type: "error",
+                message: "Delivery address not found"
+            });
+        }
+
+        user.deliveryAddress.splice(addressIndex, 1);
+        await user.save();
+
+        return res.status(200).json({
+            type: "success",
+            message: "Delivery address successfully deleted"
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}
+
+exports.getUserDeliveryAddresses = async (req, res) => {
+    try {
+        let userId = req.query.userId;
+
+        let user = await userService.getById(userId);
+        if (!user) {
+            return res.status(404).json({
+                type: "error",
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json({
+            type: "success",
+            data: user.deliveryAddress
         });
     } catch (error) {
         return res.status(500).json({

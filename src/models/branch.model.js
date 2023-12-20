@@ -5,9 +5,10 @@ const pointSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-    coordinates: [{
-        type: Number,
-    }]
+    coordinates: {
+        type: [Number], // [longitude, latitude]
+        index: '2dsphere' // Enable 2dsphere index for geospatial queries
+    }
 });
 
 const hourSchema = new mongoose.Schema({
@@ -44,6 +45,17 @@ const availabilitySchema = new mongoose.Schema({
     }
 });
 
+const deliveryModeSchema = new mongoose.Schema({
+    home: {
+        type: Boolean,
+        default: false
+    },
+    branch: {
+        type: Boolean,
+        default: true
+    }
+});
+
 const branchSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -53,6 +65,11 @@ const branchSchema = new mongoose.Schema({
     location: pointSchema,
     hours: [ hourSchema ],
     availableMeals: [ availabilitySchema ],
+    deliveryMode: deliveryModeSchema,
+    loyalties: {
+        type: Number,
+        default: 0
+    },
     createdAt: {
         type: Date,
         default: Date.now

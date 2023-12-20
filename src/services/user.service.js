@@ -6,6 +6,11 @@ exports.isEmailTaken = async (email) => {
     return !!user;
 };
 
+exports.isPhoneTaken = async (phone) => {
+    const user = await User.findOne({ phone });
+    return !!user;
+};
+
 exports.create = async(body) => {
     return await User.create(body);
 }

@@ -12,6 +12,7 @@ const bucket = storage.bucket('hpay-reward-bucket') // should be your bucket nam
  */
 
 exports.uploadImage = (file) => new Promise(async (resolve, reject) => {
+
   const { originalname, buffer } = file
 
   await refreshAuthToken();

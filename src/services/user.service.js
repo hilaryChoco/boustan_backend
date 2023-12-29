@@ -2,6 +2,7 @@ const { User } = require('../models');
 
 exports.isEmailTaken = async (email) => {
     const user = await User.findOne({ email });
+    console.log(user)
     return !!user;
 };
 

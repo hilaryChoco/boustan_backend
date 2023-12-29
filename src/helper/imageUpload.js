@@ -1,5 +1,5 @@
 const util = require('util');
-const { storage, refreshAuthToken } = require('../config');
+const { storage, refreshAuthToken } = require('../config/imageUploadConfig');
 const bucket = storage.bucket('hpay-reward-bucket') // should be your bucket name
 
 /**
@@ -20,9 +20,7 @@ exports.uploadImage = (file) => new Promise(async (resolve, reject) => {
     resumable: false
   })
   blobStream.on('finish', () => {
-    const publicUrl = format(
-      `https://storage.googleapis.com/${bucket.name}/${blob.name}`
-    )
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`
     resolve(publicUrl)
   })
   .on('error', (err) => {

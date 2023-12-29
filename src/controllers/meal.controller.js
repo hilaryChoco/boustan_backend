@@ -167,3 +167,22 @@ exports.getAllByCategoryId = async (req, res) => {
         });
     }
 }
+
+exports.getById = async (req, res) => {
+    try {
+        const id = req.query.id;
+
+        let meal = await mealService.getById(id);
+
+        return res.status(200).json({
+            type: "success",
+            data: meal
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "error",
+            message: "Server Error",
+            error: error.stack
+        });
+    }
+}

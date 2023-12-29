@@ -8,6 +8,33 @@ const { isAuth } = require('../middleware/auth');
 
 /**
  * @swagger
+ *  /api/meals/get-one:
+ *      get:
+ *          summary: Displays a meal
+ *          tags:
+ *              - Meals
+ *          security:
+ *              - bearerAuth: []
+ *          parameters:
+ *              - in: query
+ *                name: id
+ *                schema:
+ *                  type: string
+ *                  required: true
+ *                description: Meal ID
+ *          responses:
+ *              '200':
+ *                description: >
+ *                    Returns an object of meals
+ *              '500':
+ *                  description: >
+ *                    Server Error
+ *
+ */
+router.get("/get-one", mealCtrl.getById);
+
+/**
+ * @swagger
  *  /api/meals:
  *      get:
  *          summary: Displays a list of meals
